@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Heart, Trophy, Timer, Star, ArrowLeft, ArrowRight, User, Play, RefreshCcw, XCircle, Map, HelpCircle, X, Download, Lock, CheckCircle2, Home } from 'lucide-react';
 import { Analytics } from '@vercel/analytics/react';
+import { motion, AnimatePresence } from 'framer-motion';
+import confetti from 'canvas-confetti';
 
 // --- Constants & Data ---
 const TOTAL_CHALLENGES = 8;
@@ -13,7 +15,7 @@ const THEMES = [
   {
     id: 1,
     name: 'מדבר',
-    bg: 'https://www.novakidschool.com/he/blog/wp-content/uploads/2024/02/%D7%9B%D7%9C-%D7%90%D7%97%D7%93-%D7%9E%D7%94%D7%9E%D7%93%D7%91%D7%A8%D7%99%D7%95%D7%AA-%D7%94%D7%9C%D7%9C%D7%95-%D7%9E%D7%A6%D7%99%D7%92-%D7%A0%D7%95%D7%A3-%D7%A2%D7%95%D7%A6%D7%A8-%D7%A0%D7%A9%D7%99%D7%9E%D7%94-%D7%9C%D7%94%D7%A8%D7%A4%D7%AA%D7%A7%D7%90%D7%95%D7%AA-%D7%90%D7%9A-%D7%94%D7%9D-%D7%92%D7%9D-%D7%9E%D7%AA%D7%9E%D7%95%D7%93%D7%93%D7%99%D7%9D-%D7%A2%D7%9D-%D7%90%D7%AA%D7%92%D7%A8%D7%99%D7%9D-%D7%9C%D7%90-%D7%9E%D7%A2%D7%98%D7%99%D7%9D.-.jpeg',
+    bg: 'https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?auto=format&fit=crop&q=80&w=1000',
     avatar: '🐪',
     avatarName: (gender) => gender === 'male' ? 'מלך המדבר' : 'מלכת המדבר',
     prize: '🌵'
@@ -23,7 +25,7 @@ const THEMES = [
     name: 'חלל',
     bg: 'https://www.lnk.co.il/wp-content/uploads/2015/07/hs-2009-25-f-xlarge_web-compressor.jpg',
     avatar: '👨‍🚀',
-    avatarName: (gender) => gender === 'male' ? 'אסטרונאוט' : 'אסטרונאוטית',
+    avatarName: (gender) => gender === 'male' ? 'האסטרונאוט' : 'האסטרונאוטית',
     prize: '🚀'
   },
   {
@@ -39,7 +41,7 @@ const THEMES = [
     name: 'כדורגל',
     bg: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=1000',
     avatar: '⚽',
-    avatarName: (gender) => gender === 'male' ? 'שחקן כדורגל' : 'שחקנית כדורגל',
+    avatarName: (gender) => gender === 'male' ? 'שחקן הכדורגל' : 'שחקנית הכדורגל',
     prize: '🏆'
   },
   {
@@ -47,7 +49,7 @@ const THEMES = [
     name: 'מתחת למים',
     bg: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&q=80&w=1000',
     avatar: '🤿',
-    avatarName: (gender) => gender === 'male' ? 'צוללן' : 'צוללנית',
+    avatarName: (gender) => gender === 'male' ? 'הצולל' : 'הצוללת',
     prize: '🐬'
   },
   {
@@ -55,7 +57,7 @@ const THEMES = [
     name: 'עיר עתידנית',
     bg: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&q=80&w=1000',
     avatar: '🤖',
-    avatarName: (gender) => 'רובוט',
+    avatarName: (gender) => gender === 'male' ? 'הרובוט' : 'הרובוטית',
     prize: '⚙️'
   },
   {
@@ -63,7 +65,7 @@ const THEMES = [
     name: 'חורף מושלג',
     bg: 'https://images.unsplash.com/photo-1483664852095-d6cc6870702d?auto=format&fit=crop&q=80&w=1000',
     avatar: '🐧',
-    avatarName: (gender) => 'פינגווין',
+    avatarName: (gender) => gender === 'male' ? 'הפינגווין' : 'הפינגווינית',
     prize: '❄️'
   },
   {
@@ -71,7 +73,7 @@ const THEMES = [
     name: 'ארמון האבירים',
     bg: 'https://images.unsplash.com/photo-1533154683836-84ea7a0bc310?auto=format&fit=crop&q=80&w=1000',
     avatar: '🛡️',
-    avatarName: (gender) => gender === 'male' ? 'אביר' : 'אבירה',
+    avatarName: (gender) => gender === 'male' ? 'האביר' : 'האבירה',
     prize: '👑'
   }
 ];
@@ -145,8 +147,24 @@ const calculateCorrectSolution = (num1, num2, type) => {
   }
 };
 
-// --- Components ---
+// --- Framer Motion Variants ---
+const pageVariants = {
+  initial: { opacity: 0, scale: 0.95 },
+  animate: { opacity: 1, scale: 1, transition: { duration: 0.4, type: "spring", bounce: 0.3 } },
+  exit: { opacity: 0, scale: 1.05, transition: { duration: 0.2 } }
+};
 
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.1 } }
+};
+
+const staggerItem = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300 } }
+};
+
+// --- Components ---
 const VerticalProblem = ({
   num1, num2, type,
   resTens, setResTens, resOnes, setResOnes,
@@ -175,74 +193,83 @@ const VerticalProblem = ({
   const t = (m, f) => gender === 'male' ? m : f;
 
   return (
-    <div className="flex flex-col items-center justify-center font-mono text-4xl md:text-5xl text-slate-800" dir="ltr">
+    <div className="flex flex-col items-center justify-center font-mono text-5xl text-slate-800" dir="ltr">
 
-      <div className="h-8 text-sm font-sans text-blue-600 mb-2 font-bold transition-opacity text-center w-full" dir="rtl">
-        {activeCarry && !isStatic ? t('כתוב כאן את ההמרה של הספרה שכאן למטה 👇🏼', 'כתבי כאן את ההמרה של הספרה שכאן למטה 👇🏼') : ''}
-      </div>
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0, h: 0 }}
+          animate={{ opacity: 1, h: 'auto' }}
+          className="h-8 text-[12px] font-sans text-slate-500 mb-2 font-bold transition-opacity text-center w-full" dir="rtl"
+        >
+          {activeCarry && !isStatic ? t('כתוב כאן את ההמרה של הספרה שמתחת לריבוע הזה 👇🏼', 'כתבי כאן את ההמרה של הספרה שמתחת לריבוע הזה 👇🏼') : ''}
+        </motion.div>
+      </AnimatePresence>
 
-      <div className="flex justify-end gap-2 w-48 mb-2 pr-2 relative">
+      <div className="flex justify-end gap-3 w-56 mb-3 pr-2 relative">
         <div className="flex flex-col items-center">
-          <span className="text-[10px] text-slate-400 font-sans mb-1">המרה</span>
+          <span className="text-[12px] text-slate-400 font-sans mb-1 uppercase tracking-wider">המרה</span>
           {!isStatic ? (
-            <input
+            <motion.input
+              whileFocus={{ scale: 1.1, borderColor: '#3b82f6' }}
               type="text" maxLength="1"
               value={carryTens}
               onChange={(e) => setCarryTens(e.target.value.replace(/[^0-9]/g, ''))}
               onFocus={() => setActiveCarry('tens')}
               onBlur={() => setActiveCarry(null)}
-              className="w-12 h-12 border-2 border-dashed border-blue-300 rounded text-center text-2xl bg-blue-50 focus:outline-none focus:border-blue-500"
+              className="w-14 h-14 border-2 border-dashed border-blue-300 rounded-xl text-center text-2xl bg-blue-50/50 focus:outline-none focus:bg-white shadow-sm transition-colors"
             />
           ) : (
-            <div className="w-12 h-12 flex items-center justify-center text-2xl text-red-600 font-bold border-2 border-red-200 bg-red-50 rounded">
+            <div className="w-14 h-14 flex items-center justify-center text-2xl text-red-600 font-bold border-2 border-red-200 bg-red-50 rounded-xl shadow-sm">
               {displayCarryTens}
             </div>
           )}
         </div>
 
         <div className="flex flex-col items-center">
-          <span className="text-[10px] text-slate-400 font-sans mb-1">המרה</span>
+          <span className="text-[12px] text-slate-400 font-sans mb-1 uppercase tracking-wider">המרה</span>
           {!isStatic ? (
-            <input
+            <motion.input
+              whileFocus={{ scale: 1.1, borderColor: '#3b82f6' }}
               type="text" maxLength="2"
               value={carryOnes}
               onChange={(e) => setCarryOnes(e.target.value.replace(/[^0-9]/g, ''))}
               onFocus={() => setActiveCarry('ones')}
               onBlur={() => setActiveCarry(null)}
-              className="w-12 h-12 border-2 border-dashed border-blue-300 rounded text-center text-2xl bg-blue-50 focus:outline-none focus:border-blue-500"
+              className="w-14 h-14 border-2 border-dashed border-blue-300 rounded-xl text-center text-2xl bg-blue-50/50 focus:outline-none focus:bg-white shadow-sm transition-colors"
             />
           ) : (
-            <div className="w-12 h-12 flex items-center justify-center text-2xl text-red-600 font-bold border-2 border-red-200 bg-red-50 rounded">
+            <div className="w-14 h-14 flex items-center justify-center text-2xl text-red-600 font-bold border-2 border-red-200 bg-red-50 rounded-xl shadow-sm">
               {displayCarryOnes}
             </div>
           )}
         </div>
       </div>
 
-      <div className="flex flex-col items-end border-b-4 border-slate-800 pb-2 w-48 pr-2 relative">
-        <span className="absolute left-0 bottom-2 text-5xl">{type}</span>
+      <div className="flex flex-col items-end border-b-4 border-slate-800 pb-3 w-56 pr-2 relative bg-slate-50 rounded-t-2xl p-4 shadow-inner">
+        <span className="absolute left-4 bottom-4 text-6xl text-slate-300 font-black">{type}</span>
 
-        <div className="flex gap-2 tracking-widest relative z-10">
-          <div className={`w-12 text-center relative ${strikeTens ? "text-slate-400" : ""}`}>
+        <div className="flex gap-3 tracking-widest relative z-10">
+          <div className={`w-14 text-center relative ${strikeTens ? "text-slate-400" : "text-slate-700"}`}>
             {n1Tens}
-            {strikeTens && <div className="absolute top-1/2 left-0 w-full h-1 bg-red-500 -rotate-12 transform -translate-y-1/2 rounded-full"></div>}
+            {strikeTens && <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} className="absolute top-1/2 left-0 h-1.5 bg-red-500 -rotate-12 transform -translate-y-1/2 rounded-full"></motion.div>}
           </div>
-          <div className={`w-12 text-center relative ${strikeOnes ? "text-slate-400" : ""}`}>
+          <div className={`w-14 text-center relative ${strikeOnes ? "text-slate-400" : "text-slate-700"}`}>
             {n1Ones}
-            {strikeOnes && <div className="absolute top-1/2 left-0 w-full h-1 bg-red-500 -rotate-12 transform -translate-y-1/2 rounded-full"></div>}
+            {strikeOnes && <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} className="absolute top-1/2 left-0 h-1.5 bg-red-500 -rotate-12 transform -translate-y-1/2 rounded-full"></motion.div>}
           </div>
         </div>
 
-        <div className="flex gap-2 tracking-widest mt-2">
-          <div className="w-12 text-center">{n2Tens}</div>
-          <div className="w-12 text-center">{n2Ones}</div>
+        <div className="flex gap-3 tracking-widest mt-3 text-slate-700">
+          <div className="w-14 text-center">{n2Tens}</div>
+          <div className="w-14 text-center">{n2Ones}</div>
         </div>
       </div>
 
-      <div className="mt-4 flex justify-end gap-2 w-48 pr-2">
+      <div className="mt-6 flex justify-end gap-3 w-56 pr-2">
         {!isStatic ? (
           <>
-            <input
+            <motion.input
+              whileFocus={{ y: -5, boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
               ref={tensRef}
               type="text" maxLength="2"
               value={resTens}
@@ -250,9 +277,10 @@ const VerticalProblem = ({
                 setResTens(e.target.value.replace(/[^0-9-]/g, ''));
                 if (e.target.value) onesRef.current?.focus();
               }}
-              className="w-12 h-14 border-2 border-slate-300 rounded text-center text-4xl bg-white focus:outline-none focus:border-green-500 shadow-inner"
+              className="w-14 h-16 border-2 border-slate-300 rounded-xl text-center text-4xl bg-white focus:outline-none focus:border-green-500 shadow-inner text-slate-800 font-bold transition-all"
             />
-            <input
+            <motion.input
+              whileFocus={{ y: -5, boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
               ref={onesRef}
               type="text" maxLength="1" autoFocus
               value={resOnes}
@@ -260,13 +288,13 @@ const VerticalProblem = ({
                 setResOnes(e.target.value.replace(/[^0-9]/g, ''));
                 if (e.target.value) tensRef.current?.focus();
               }}
-              className="w-12 h-14 border-2 border-slate-300 rounded text-center text-4xl bg-white focus:outline-none focus:border-green-500 shadow-inner"
+              className="w-14 h-16 border-2 border-slate-300 rounded-xl text-center text-4xl bg-white focus:outline-none focus:border-green-500 shadow-inner text-slate-800 font-bold transition-all"
             />
           </>
         ) : (
           <>
-            <div className="w-12 h-14 flex items-center justify-center bg-green-50 rounded text-green-600 font-bold border-2 border-green-200">{displayResTens}</div>
-            <div className="w-12 h-14 flex items-center justify-center bg-green-50 rounded text-green-600 font-bold border-2 border-green-200">{displayResOnes}</div>
+            <div className="w-14 h-16 flex items-center justify-center bg-green-100 rounded-xl text-green-700 font-extrabold border-2 border-green-300 shadow-sm">{displayResTens}</div>
+            <div className="w-14 h-16 flex items-center justify-center bg-green-100 rounded-xl text-green-700 font-extrabold border-2 border-green-300 shadow-sm">{displayResOnes}</div>
           </>
         )}
       </div>
@@ -313,6 +341,22 @@ export default function App() {
 
   const t = useCallback((m, f) => (gender === 'male' ? m : f), [gender]);
 
+  const fireSuccessConfetti = () => {
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#22c55e', '#3b82f6', '#fbbf24'] });
+  };
+
+  const fireVictoryConfetti = () => {
+    const duration = 5 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+    const interval = setInterval(function () {
+      const timeLeft = animationEnd - Date.now();
+      if (timeLeft <= 0) return clearInterval(interval);
+      const particleCount = 50 * (timeLeft / duration);
+      confetti(Object.assign({}, defaults, { particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
+    }, 250);
+  };
+
   const startNewExercise = useCallback(() => {
     const ex = generateExercise(challengeIdx, difficulty, taskIdx, exerciseIdx);
     setCurrentEx(ex);
@@ -357,6 +401,13 @@ export default function App() {
     return () => clearInterval(feedbackTimerRef.current);
   }, [screen]);
 
+  useEffect(() => {
+    if (screen === 'victory') fireVictoryConfetti();
+    if (screen === 'challengeComplete') {
+      confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 } });
+    }
+  }, [screen]);
+
   const handleTimeout = () => {
     setTimerActive(false);
     setFeedbackType('timeout');
@@ -370,6 +421,7 @@ export default function App() {
     if (hearts < MAX_HEARTS) setHearts(h => h + 1);
     setBonusActive(false);
     setBonusMessageVisible(false);
+    confetti({ particleCount: 50, spread: 60, origin: { y: parseFloat(bonusPos.top) / 100, x: parseFloat(bonusPos.left) / 100 } });
   };
 
   const checkAnswer = () => {
@@ -390,6 +442,7 @@ export default function App() {
     }
 
     if (isCorrect) {
+      fireSuccessConfetti();
       if (currentEx.isSpecial) {
         setShowSpecialAnim(true);
         setTimeout(() => setShowSpecialAnim(false), 3000);
@@ -414,7 +467,7 @@ export default function App() {
         }, 6000);
       }
 
-      setTimeout(advanceProgress, currentEx.isSpecial ? 3500 : 1200);
+      setTimeout(advanceProgress, currentEx.isSpecial ? 3500 : 1500);
     } else {
       setHearts(h => h - 1);
       setConsecutiveCorrect(0);
@@ -506,11 +559,12 @@ export default function App() {
 
   const theme = THEMES[challengeIdx] || THEMES[0];
 
+  // Global Styles injection for the fun game font
   useEffect(() => {
     const style = document.createElement('style');
     style.innerHTML = `
-      @keyframes drop { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
-      .confetti { position: absolute; animation: drop 3s linear forwards; font-size: 2rem; z-index: 10; pointer-events: none; }
+      @import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+      .game-font { font-family: 'Varela Round', sans-serif !important; }
       @keyframes hands { 0% { transform: translateY(-20px); } 100% { transform: translateY(20px); } }
       .anim-hand-left { animation: hands 0.4s infinite alternate; display: inline-block; }
       .anim-hand-right { animation: hands 0.4s infinite alternate-reverse; display: inline-block; }
@@ -520,461 +574,504 @@ export default function App() {
   }, []);
 
   return (
-    <div className="w-full h-screen max-h-[850px] bg-slate-200 p-2 md:p-6 flex items-center justify-center font-sans overflow-hidden" dir="rtl">
-      <div className="w-full h-full max-w-4xl bg-white rounded-[2rem] shadow-2xl overflow-hidden relative flex flex-col">
+    <div className="w-full h-screen max-h-[850px] bg-slate-200 p-2 md:p-6 flex items-center justify-center font-sans game-font overflow-hidden" dir="rtl">
+      <div className="w-full h-full max-w-4xl bg-white rounded-[2rem] shadow-2xl overflow-hidden relative flex flex-col border-4 border-slate-300/50">
 
-        {/* --- WELCOME SCREEN --- */}
-        {screen === 'welcome' && (
-          <div className="flex flex-col items-center justify-center flex-1 text-center p-6 bg-gradient-to-br from-blue-500 to-purple-600 text-white relative">
-            <Trophy size={80} className="mb-6 animate-bounce text-yellow-300" />
-            <h1 className="text-5xl font-bold mb-4">המשחק של ב׳2</h1>
-            <p className="text-xl mb-10 max-w-md">ברוכים הבאים לאתגר החשבון הגדול! מוכנים לצאת למסע?</p>
-            <button
-              onClick={() => setScreen('setup')}
-              className="px-10 py-4 bg-white text-blue-600 rounded-full font-bold text-2xl hover:scale-105 transition-transform flex items-center gap-2 shadow-lg"
-            >
-              מתחילים! <ArrowLeft />
-            </button>
-          </div>
-        )}
+        <AnimatePresence mode="wait">
 
-        {/* --- SETUP SCREEN --- */}
-        {screen === 'setup' && (
-          <div className="flex flex-col items-center justify-center flex-1 p-8 bg-white text-slate-800">
-            <User size={48} className="text-blue-500 mb-4" />
-            <h2 className="text-3xl font-bold mb-8">ספרו לנו עליכם</h2>
+          {/* --- WELCOME SCREEN --- */}
+          {screen === 'welcome' && (
+            <motion.div key="welcome" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 text-center p-6 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white relative">
+              <motion.div animate={{ rotate: [0, -10, 10, -10, 10, 0] }} transition={{ repeat: Infinity, duration: 2, repeatDelay: 1 }}>
+                <Trophy size={100} className="mb-6 text-yellow-300 drop-shadow-[0_0_15px_rgba(253,224,71,0.5)]" />
+              </motion.div>
+              <h1 className="text-6xl font-black mb-4 drop-shadow-lg tracking-wide">המשחק של ב׳2</h1>
+              <p className="text-2xl mb-12 max-w-md opacity-90">ברוכים הבאים לאתגר החשבון הגדול! מוכנים לצאת למסע?</p>
+              <motion.button
+                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                onClick={() => setScreen('setup')}
+                className="px-12 py-5 bg-white text-indigo-600 rounded-full font-black text-3xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.3)] flex items-center gap-3 border-4 border-white/20"
+              >
+                מתחילים! <ArrowLeft strokeWidth={3} />
+              </motion.button>
+            </motion.div>
+          )}
 
-            <div className="w-full max-w-sm space-y-6">
-              <div>
-                <label className="block text-sm font-medium mb-2">איך קוראים לך?</label>
-                <input
-                  type="text"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  className="w-full p-3 border-2 border-slate-200 rounded-xl focus:border-blue-500 outline-none text-center text-xl"
-                  placeholder="השם שלך כאן"
-                />
+          {/* --- SETUP SCREEN --- */}
+          {screen === 'setup' && (
+            <motion.div key="setup" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 p-8 bg-slate-50 text-slate-800 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-100 via-slate-50 to-slate-200">
+              <User size={56} className="text-indigo-500 mb-4 drop-shadow-md" />
+              <h2 className="text-4xl font-black mb-10 text-slate-800 tracking-wide">ספרו לנו עליכם</h2>
+
+              <div className="w-full max-w-sm space-y-8">
+                <motion.div variants={staggerItem}>
+                  <label className="block text-lg font-bold mb-3 text-slate-600">איך קוראים לך?</label>
+                  <input
+                    type="text"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    className="w-full p-4 border-4 border-slate-200 rounded-2xl focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none text-center text-2xl font-bold transition-all shadow-sm"
+                    placeholder="השם שלך כאן"
+                  />
+                </motion.div>
+
+                <motion.div variants={staggerItem}>
+                  <label className="block text-lg font-bold mb-3 text-slate-600">אני...</label>
+                  <div className="flex gap-4">
+                    <motion.button whileHover={{ y: -2 }} whileTap={{ scale: 0.95 }}
+                      onClick={() => setGender('male')}
+                      className={`flex-1 p-4 rounded-2xl border-4 transition-all font-black text-xl flex flex-col items-center gap-2 ${gender === 'male' ? 'bg-indigo-500 text-white border-indigo-600 shadow-lg' : 'bg-white text-slate-500 border-slate-200 hover:border-indigo-300'}`}
+                    >
+                      <span className="text-3xl">👦</span> שחקן
+                    </motion.button>
+                    <motion.button whileHover={{ y: -2 }} whileTap={{ scale: 0.95 }}
+                      onClick={() => setGender('female')}
+                      className={`flex-1 p-4 rounded-2xl border-4 transition-all font-black text-xl flex flex-col items-center gap-2 ${gender === 'female' ? 'bg-indigo-500 text-white border-indigo-600 shadow-lg' : 'bg-white text-slate-500 border-slate-200 hover:border-indigo-300'}`}
+                    >
+                      <span className="text-3xl">👧</span> שחקנית
+                    </motion.button>
+                  </div>
+                </motion.div>
+
+                <motion.div variants={staggerItem}>
+                  <label className="block text-lg font-bold mb-3 text-slate-600">רמת קושי</label>
+                  <div className="flex gap-3 bg-white p-2 rounded-2xl border-4 border-slate-200 shadow-sm">
+                    {['קל', 'בינוני', 'קשה'].map(d => (
+                      <button key={d} onClick={() => setDifficulty(d)}
+                        className={`flex-1 py-3 rounded-xl text-lg font-bold transition-all ${difficulty === d ? 'bg-purple-500 text-white shadow-md' : 'bg-transparent text-slate-500 hover:bg-slate-100'}`}
+                      >{d}</button>
+                    ))}
+                  </div>
+                </motion.div>
+
+                <motion.button whileHover={{ scale: userName ? 1.05 : 1 }} whileTap={{ scale: userName ? 0.95 : 1 }}
+                  disabled={!userName}
+                  onClick={() => setScreen('map')}
+                  className="w-full py-5 mt-4 bg-emerald-500 text-white rounded-2xl font-black text-2xl disabled:opacity-50 disabled:bg-slate-300 disabled:cursor-not-allowed shadow-[0_8px_20px_-5px_rgba(16,185,129,0.5)] flex items-center justify-center gap-3 transition-all"
+                >
+                  {t('מוכן?', 'מוכנה?')} <ArrowLeft strokeWidth={3} size={28} />
+                </motion.button>
               </div>
+            </motion.div>
+          )}
 
-              <div>
-                <label className="block text-sm font-medium mb-2">אני...</label>
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => setGender('male')}
-                    className={`flex-1 p-3 rounded-xl border-2 transition-all font-bold ${gender === 'male' ? 'bg-blue-500 text-white border-blue-500' : 'bg-slate-50 border-slate-200'}`}
-                  >שחקן 👦</button>
-                  <button
-                    onClick={() => setGender('female')}
-                    className={`flex-1 p-3 rounded-xl border-2 transition-all font-bold ${gender === 'female' ? 'bg-pink-500 text-white border-pink-500' : 'bg-slate-50 border-slate-200'}`}
-                  >שחקנית 👧</button>
+          {/* --- MAP SCREEN --- */}
+          {screen === 'map' && (
+            <motion.div key="map" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col flex-1 bg-slate-900 text-white relative overflow-hidden">
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 pointer-events-none"></div>
+
+              <div className="p-5 bg-slate-900/90 backdrop-blur-md flex justify-between items-center shadow-xl z-20 border-b border-slate-700/50">
+                <h2 className="text-2xl font-black flex items-center gap-3"><Map className="text-indigo-400" /> מפת האתגרים</h2>
+                <div className="flex items-center gap-2 text-yellow-400 font-bold bg-slate-800 px-5 py-2 rounded-full border-2 border-slate-700 shadow-inner">
+                  <Trophy size={18} /> {earnedPrizes.length === 0 ? 'אין עדיין' : earnedPrizes.join(' ')}
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-2">רמת קושי</label>
-                <div className="flex gap-2">
-                  {['קל', 'בינוני', 'קשה'].map(d => (
-                    <button key={d} onClick={() => setDifficulty(d)}
-                      className={`flex-1 py-2 rounded-lg text-sm border-2 font-bold transition-all ${difficulty === d ? 'bg-purple-500 text-white border-purple-500' : 'bg-slate-50 border-slate-200'}`}
-                    >{d}</button>
+              <div className="flex-1 p-6 flex flex-col items-center justify-start gap-6 relative overflow-y-auto pb-20">
+                <div className="w-3 h-full bg-slate-800 absolute left-1/2 -translate-x-1/2 rounded-full shadow-inner"></div>
+
+                <motion.div variants={staggerContainer} initial="hidden" animate="show" className="w-full flex flex-col items-center gap-6">
+                  {THEMES.map((th, idx) => {
+                    const isUnlocked = idx <= challengeIdx;
+                    const isCurrent = idx === challengeIdx;
+                    const isDone = idx < challengeIdx;
+                    return (
+                      <motion.div variants={staggerItem} key={th.id} className="relative z-10 w-full max-w-md">
+                        <motion.button whileHover={isCurrent ? { scale: 1.05 } : {}} whileTap={isCurrent ? { scale: 0.98 } : {}}
+                          onClick={() => isCurrent && setScreen('challengeIntro')}
+                          disabled={!isCurrent}
+                          className={`w-full p-5 rounded-[2rem] border-4 transition-all flex items-center gap-5 relative overflow-hidden
+                          ${isCurrent ? 'bg-gradient-to-r from-indigo-600 to-blue-500 border-yellow-400 shadow-[0_0_30px_rgba(99,102,241,0.5)] cursor-pointer' :
+                              isDone ? 'bg-emerald-600 border-emerald-400 opacity-90' :
+                                'bg-slate-800 border-slate-700 opacity-60 cursor-not-allowed'}`}
+                        >
+                          {isCurrent && <div className="absolute inset-0 bg-white/10 animate-pulse pointer-events-none"></div>}
+
+                          <div className="text-5xl bg-black/20 p-3 rounded-2xl shadow-inner backdrop-blur-sm">
+                            {isDone ? th.prize : isUnlocked ? th.avatar : <Lock className="text-slate-400" size={40} />}
+                          </div>
+                          <div className="flex-1 text-right">
+                            <div className="font-black text-2xl mb-1 tracking-wide">{th.name}</div>
+                            <div className="text-sm font-bold opacity-80 bg-black/20 inline-block px-3 py-1 rounded-full">
+                              {isDone ? 'הושלם! 🎉' : isCurrent ? 'האתגר הבא שלך' : 'נעול'}
+                            </div>
+                          </div>
+                          {isCurrent && <Play className="text-yellow-400 ml-2" size={32} fill="currentColor" />}
+                        </motion.button>
+                      </motion.div>
+                    );
+                  })}
+                </motion.div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* --- CHALLENGE INTRO SCREEN --- */}
+          {screen === 'challengeIntro' && (
+            <motion.div key="intro" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 text-center p-6 text-white relative bg-cover bg-center" style={{ backgroundImage: `url(${theme.bg})` }}>
+              <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
+
+              <button onClick={() => setScreen('map')} className="absolute top-6 right-6 z-20 flex items-center gap-2 bg-black/40 hover:bg-black/60 px-5 py-2.5 rounded-full transition-colors font-bold border border-white/20 backdrop-blur-md">
+                <Home size={20} /> חזרה למפה
+              </button>
+
+              <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ type: "spring", delay: 0.2 }} className="relative z-10 bg-white/10 p-10 md:p-14 rounded-[3rem] border-2 border-white/20 backdrop-blur-xl shadow-2xl max-w-xl w-full">
+                <motion.div animate={{ y: [-10, 10, -10] }} transition={{ repeat: Infinity, duration: 4 }} className="text-[6rem] mb-6 drop-shadow-2xl leading-none">
+                  {theme.avatar}
+                </motion.div>
+                <h2 className="text-5xl font-black mb-4 drop-shadow-lg">{t('ברוך הבא', 'ברוכה הבאה')} ל{theme.name}!</h2>
+                <p className="text-2xl mb-10 text-white/90 leading-relaxed font-medium">
+                  <span className="font-black text-yellow-300">{userName}</span>, {theme.avatarName(gender)} שלנו {theme.avatar}, {t('בוא נראה מה אתה יודע', 'בואי נראה מה את יודעת')}.
+                </p>
+                <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                  onClick={startNewExercise}
+                  className="w-full py-5 bg-gradient-to-r from-yellow-400 to-yellow-500 text-slate-900 rounded-full font-black text-3xl shadow-[0_10px_25px_-5px_rgba(253,224,71,0.5)] border-4 border-yellow-300/50"
+                >
+                  {t('התחל אתגר!', 'התחילי אתגר!')}
+                </motion.button>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {/* --- TASK TRANSITION SCREEN --- */}
+          {screen === 'taskTransition' && (
+            <motion.div key="taskTransition" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 p-8 text-white text-center relative bg-cover bg-center" style={{ backgroundImage: `url(${theme.bg})` }}>
+              <div className="absolute inset-0 bg-indigo-900/80 backdrop-blur-md" />
+
+              <button onClick={() => setScreen('map')} className="absolute top-6 right-6 z-20 flex items-center gap-2 bg-black/40 hover:bg-black/60 px-5 py-2.5 rounded-full transition-colors font-bold border border-white/20 backdrop-blur-md">
+                <Home size={20} /> חזרה למפה
+              </button>
+
+              <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative z-10 flex flex-col items-center">
+                <CheckCircle2 size={120} className="text-emerald-400 mb-6 drop-shadow-[0_0_20px_rgba(52,211,153,0.5)]" />
+                <h2 className="text-6xl font-black mb-4 tracking-wide">כל הכבוד!</h2>
+                <p className="text-3xl mb-10 font-medium text-indigo-100">סיימת את המשימה הראשונה באתגר ה{theme.name}.<br />{t('מוכן', 'מוכנה')} למשימה השנייה?</p>
+
+                <div className="flex gap-3 mb-12">
+                  <div className="w-20 h-5 bg-emerald-400 rounded-full shadow-inner border-2 border-emerald-300"></div>
+                  <div className="w-20 h-5 bg-white/20 rounded-full border-2 border-white/30 backdrop-blur-sm"></div>
+                </div>
+
+                <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                  onClick={() => { setExerciseIdx(0); startNewExercise(); }}
+                  className="px-12 py-5 bg-white text-indigo-600 rounded-full font-black text-3xl shadow-[0_10px_25px_-5px_rgba(255,255,255,0.3)] flex items-center gap-3 border-4 border-white/50"
+                >
+                  למשימה השנייה <ArrowLeft strokeWidth={3} />
+                </motion.button>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {/* --- PLAYING SCREEN --- */}
+          {screen === 'playing' && currentEx && (
+            <motion.div key="playing" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="relative flex-1 flex flex-col bg-slate-100">
+              <div className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" style={{ backgroundImage: `url(${theme.bg})` }}></div>
+
+              <div className="relative z-20 p-4 flex justify-between items-center bg-white/90 backdrop-blur-xl border-b border-slate-200 shadow-sm">
+                <div className="flex items-center gap-3">
+                  <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => setShowInstructions(true)} className="p-3 bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-indigo-600 rounded-2xl transition-colors" title="הוראות">
+                    <HelpCircle size={24} />
+                  </motion.button>
+                  <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => setScreen('map')} className="p-3 bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-indigo-600 rounded-2xl transition-colors flex items-center gap-2 font-bold" title="למפה">
+                    <Home size={20} />
+                  </motion.button>
+                  <div className="flex flex-col hidden sm:flex bg-indigo-50 px-4 py-2 rounded-2xl border border-indigo-100">
+                    <span className="text-[11px] font-bold text-indigo-400 uppercase tracking-wider">{theme.name} - משימה {taskIdx + 1}/2</span>
+                    <span className="font-black text-indigo-900">{userName} {theme.avatar}</span>
+                  </div>
+                </div>
+                <div className="flex gap-1.5 bg-slate-100 p-2.5 rounded-2xl border border-slate-200 shadow-inner">
+                  {Array(MAX_HEARTS).fill(0).map((_, i) => (
+                    <motion.div key={i} animate={i < hearts ? { scale: [1, 1.1, 1] } : {}} transition={{ repeat: Infinity, duration: 2, delay: i * 0.2 }}>
+                      <Heart size={26} fill={i < hearts ? "#f43f5e" : "#e2e8f0"} stroke={i < hearts ? "#f43f5e" : "#cbd5e1"} className={i < hearts ? "drop-shadow-sm" : ""} />
+                    </motion.div>
                   ))}
                 </div>
               </div>
 
-              <button
-                disabled={!userName}
-                onClick={() => setScreen('map')}
-                className="w-full py-4 bg-green-500 text-white rounded-xl font-bold text-xl hover:bg-green-600 disabled:opacity-50 shadow-md flex items-center justify-center gap-2"
-              >
-                {t('מוכן?', 'מוכנה?')} <ArrowLeft size={24} />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* --- MAP SCREEN --- */}
-        {screen === 'map' && (
-          <div className="flex flex-col flex-1 bg-slate-800 text-white relative">
-            <div className="p-4 bg-slate-900 flex justify-between items-center shadow-md z-10">
-              <h2 className="text-2xl font-bold flex items-center gap-2"><Map /> מפת האתגרים</h2>
-              <div className="flex items-center gap-2 text-yellow-400 font-bold bg-slate-800 px-4 py-1 rounded-full border border-slate-700">
-                פרסים: {earnedPrizes.length === 0 ? 'אין עדיין' : earnedPrizes.join(' ')}
-              </div>
-            </div>
-
-            <div className="flex-1 p-6 flex flex-col items-center justify-center gap-4 relative overflow-y-auto">
-              <div className="w-2 h-full bg-slate-700 absolute left-1/2 -translate-x-1/2 rounded-full"></div>
-              {THEMES.map((th, idx) => {
-                const isUnlocked = idx <= challengeIdx;
-                const isCurrent = idx === challengeIdx;
-                const isDone = idx < challengeIdx;
-                return (
-                  <div key={th.id} className="relative z-10 w-full max-w-sm">
-                    <button
-                      onClick={() => isCurrent && setScreen('challengeIntro')}
-                      disabled={!isCurrent}
-                      className={`w-full p-4 rounded-2xl border-4 transition-all flex items-center gap-4 shadow-xl
-                        ${isCurrent ? 'bg-blue-600 border-yellow-400 scale-105 cursor-pointer' :
-                          isDone ? 'bg-green-600 border-green-500 opacity-80' :
-                            'bg-slate-700 border-slate-600 opacity-50 cursor-not-allowed'}`}
-                    >
-                      <div className="text-4xl">{isDone ? th.prize : isUnlocked ? th.avatar : <Lock className="text-slate-400" />}</div>
-                      <div className="flex-1 text-right">
-                        <div className="font-bold text-xl">{th.name}</div>
-                        <div className="text-sm opacity-80">{isDone ? 'הושלם!' : isCurrent ? 'האתגר הבא שלך' : 'נעול'}</div>
-                      </div>
-                      {isCurrent && <Play className="text-yellow-400 animate-pulse" />}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* --- CHALLENGE INTRO SCREEN --- */}
-        {screen === 'challengeIntro' && (
-          <div className="flex flex-col items-center justify-center flex-1 text-center p-6 text-white relative bg-cover bg-center" style={{ backgroundImage: `url(${theme.bg})` }}>
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-
-            <button onClick={() => setScreen('map')} className="absolute top-4 right-4 z-20 flex items-center gap-2 bg-black/40 hover:bg-black/60 px-4 py-2 rounded-full transition-colors font-bold border border-white/20">
-              <Home size={20} /> חזרה למפה
-            </button>
-
-            <div className="relative z-10 bg-white/20 p-10 rounded-3xl border border-white/30 backdrop-blur-md shadow-2xl max-w-lg w-full">
-              <div className="text-7xl mb-4">{theme.avatar}</div>
-              <h2 className="text-4xl font-bold mb-4">{t('ברוך הבא', 'ברוכה הבאה')} ל{theme.name}!</h2>
-              <p className="text-2xl mb-8">
-                <span className="font-bold">{userName}</span>, ה{theme.avatarName(gender)} שלנו {theme.avatar}, {t('בוא נראה מה אתה יודע', 'בואי נראה מה את יודעת')}.
-              </p>
-              <button
-                onClick={startNewExercise}
-                className="w-full py-4 bg-yellow-400 text-black rounded-full font-bold text-2xl hover:bg-yellow-300 transition-colors shadow-xl"
-              >
-                {t('התחל אתגר!', 'התחילי אתגר!')}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* --- TASK TRANSITION SCREEN --- */}
-        {screen === 'taskTransition' && (
-          <div className="flex flex-col items-center justify-center flex-1 p-8 text-white text-center relative bg-cover bg-center" style={{ backgroundImage: `url(${theme.bg})` }}>
-            <div className="absolute inset-0 bg-blue-900/80 backdrop-blur-sm" />
-
-            <button onClick={() => setScreen('map')} className="absolute top-4 right-4 z-20 flex items-center gap-2 bg-black/40 hover:bg-black/60 px-4 py-2 rounded-full transition-colors font-bold border border-white/20">
-              <Home size={20} /> חזרה למפה
-            </button>
-
-            <div className="relative z-10 flex flex-col items-center">
-              <CheckCircle2 size={100} className="text-green-400 mb-6 drop-shadow-lg" />
-              <h2 className="text-5xl font-bold mb-4">כל הכבוד!</h2>
-              <p className="text-2xl mb-8">סיימת את המשימה הראשונה באתגר ה{theme.name}. {t('מוכן', 'מוכנה')} למשימה השנייה?</p>
-              <div className="flex gap-2 mb-10">
-                <div className="w-16 h-4 bg-green-400 rounded-full shadow-inner border border-green-300"></div>
-                <div className="w-16 h-4 bg-white/30 rounded-full border border-white/20"></div>
-              </div>
-              <button
-                onClick={() => { setExerciseIdx(0); startNewExercise(); }}
-                className="px-10 py-4 bg-white text-blue-600 rounded-full font-bold text-2xl hover:scale-105 shadow-xl flex items-center gap-2"
-              >
-                למשימה השנייה <ArrowLeft />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* --- CHALLENGE COMPLETE SCREEN --- */}
-        {screen === 'challengeComplete' && (
-          <div className="flex flex-col items-center justify-center flex-1 p-8 bg-purple-700 text-white text-center relative overflow-hidden">
-            {Array.from({ length: 40 }).map((_, i) => (
-              <span key={i} className="confetti" style={{ left: `${Math.random() * 100}%`, animationDelay: `${Math.random() * 2}s` }}>{['🎉', '✨', '🏆', '⭐'][Math.floor(Math.random() * 4)]}</span>
-            ))}
-
-            <div className="relative z-10 bg-white/10 p-10 rounded-3xl backdrop-blur-md border border-white/20 shadow-2xl">
-              <h2 className="text-5xl font-bold mb-4 text-yellow-300">אתגר הושלם!</h2>
-              <p className="text-2xl mb-6">כל הכבוד {userName}, סיימת את אתגר ה{theme.name}!</p>
-
-              <div className="bg-white/20 rounded-2xl p-6 mb-8 inline-block shadow-inner border border-white/10">
-                <p className="text-lg mb-2">הפרס שלך:</p>
-                <div className="text-8xl animate-bounce">{theme.prize}</div>
-              </div>
-
-              <div className="flex gap-4 justify-center">
-                <button
-                  onClick={handleChallengeCompleteToMap}
-                  className="px-8 py-4 bg-green-500 rounded-full font-bold text-xl hover:bg-green-400 shadow-lg flex items-center gap-2"
-                >
-                  <Map size={24} /> חזרה למפה
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* --- SHARE CERTIFICATE SCREEN --- */}
-        {screen === 'shareCertificate' && (
-          <div className="flex flex-col flex-1 bg-slate-100 items-center justify-center p-6 relative overflow-y-auto">
-            <div id="certificate-render" className="bg-white p-10 rounded-3xl shadow-2xl border-[10px] border-yellow-400 max-w-lg w-full text-center relative mb-6 relative">
-              <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none" style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/cubes.png')` }}></div>
-              <Star className="absolute top-6 right-6 text-yellow-400 drop-shadow-md" size={50} fill="yellow" />
-              <Star className="absolute top-6 left-6 text-yellow-400 drop-shadow-md" size={50} fill="yellow" />
-
-              <div className="relative z-10">
-                <Trophy className="mx-auto mb-4 text-yellow-500" size={60} />
-                <h2 className="text-4xl font-bold text-blue-800 mb-2">תעודת הצטיינות</h2>
-                <p className="text-2xl text-slate-600 mb-6">ל{gender === 'male' ? 'שחקן' : 'שחקנית'} ה{t('אלוף', 'אלופה')}:</p>
-                <h3 className="text-5xl font-extrabold text-purple-600 mb-8 border-b-4 border-purple-200 pb-4 inline-block px-8">{userName}</h3>
-
-                <p className="font-bold text-slate-700 text-xl mb-4">אלו הפרסים שזכיתי בהם במשחק של ב׳2:</p>
-                <div className="flex flex-wrap justify-center gap-4 mb-4 bg-slate-50 p-6 rounded-2xl min-h-[100px] border border-slate-200 shadow-inner">
-                  {earnedPrizes.length > 0
-                    ? earnedPrizes.map((p, i) => <span key={i} className="text-5xl bg-white p-3 rounded-xl shadow">{p}</span>)
-                    : <span className="text-slate-400 text-lg flex items-center h-full">עוד אין פרסים, המשיכו לשחק!</span>
-                  }
-                </div>
-              </div>
-            </div>
-
-            <div className="flex gap-4 w-full max-w-lg">
-              <button
-                onClick={downloadAndShareCertificate}
-                className="flex-1 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xl shadow-lg flex items-center justify-center gap-2 transition-colors"
-              >
-                <Download size={24} /> {t('שתף', 'שתפי')} הישגים
-              </button>
-              <button
-                onClick={() => setScreen('welcome')}
-                className="py-4 px-6 bg-slate-300 hover:bg-slate-400 text-slate-800 rounded-xl font-bold text-xl transition-colors"
-              >
-                למסך הראשי
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* --- PLAYING SCREEN --- */}
-        {screen === 'playing' && currentEx && (
-          <div className="relative flex-1 flex flex-col">
-            <div className="absolute inset-0 bg-cover bg-center transition-all duration-1000" style={{ backgroundImage: `url(${theme.bg})` }}>
-              <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
-            </div>
-
-            <div className="relative z-10 p-4 flex justify-between items-center text-white bg-black/40 backdrop-blur-md border-b border-white/10 shadow-md">
-              <div className="flex items-center gap-4">
-                <button onClick={() => setShowInstructions(true)} className="p-2 bg-white/20 hover:bg-white/30 rounded-full transition-colors" title="הוראות">
-                  <HelpCircle size={24} />
-                </button>
-                <button onClick={() => setScreen('map')} className="p-2 bg-white/20 hover:bg-white/30 rounded-full transition-colors flex items-center gap-2 font-bold px-4" title="למפה">
-                  <Home size={18} /> מפה
-                </button>
-                <div className="flex flex-col hidden sm:flex">
-                  <span className="text-xs text-blue-200">{theme.name} - אתגר {challengeIdx + 1}/8</span>
-                  <span className="font-bold">{userName} ה{theme.avatarName(gender)} {theme.avatar}</span>
-                </div>
-              </div>
-              <div className="flex gap-1 bg-black/30 p-2 rounded-full border border-white/10 shadow-inner">
-                {Array(MAX_HEARTS).fill(0).map((_, i) => (
-                  <Heart key={i} size={22} fill={i < hearts ? "#f43f5e" : "none"} stroke={i < hearts ? "#f43f5e" : "white"} className={i < hearts ? "drop-shadow-md" : "opacity-30"} />
-                ))}
-              </div>
-            </div>
-
-            <div className="relative z-10 w-full h-2 bg-black/40">
-              <div
-                className="h-full bg-gradient-to-l from-yellow-300 to-yellow-500 transition-all duration-500 shadow-[0_0_10px_rgba(253,224,71,0.5)]"
-                style={{ width: `${((exerciseIdx + (taskIdx * EXERCISES_PER_TASK)) / (EXERCISES_PER_TASK * TASKS_PER_CHALLENGE)) * 100}%` }}
-              />
-            </div>
-
-            <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-4">
-              <div className="bg-white p-6 md:p-8 rounded-[2rem] shadow-2xl border-4 border-blue-400 min-w-[340px] relative">
-
-                <div className="flex justify-between items-center mb-6 pb-4 border-b-2 border-slate-100">
-                  <div className="text-sm font-bold bg-blue-50 text-blue-700 px-4 py-2 rounded-xl border border-blue-100 shadow-sm">
-                    משימה {taskIdx + 1} | תרגיל {exerciseIdx + 1}/8
-                  </div>
-                  <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border shadow-sm ${timeLeft < 10 ? 'bg-red-50 border-red-300 text-red-600 animate-pulse' : 'bg-slate-50 border-slate-200 text-slate-700'}`}>
-                    <Timer size={24} />
-                    <span className="text-2xl font-mono font-bold">{timeLeft}</span>
-                  </div>
-                </div>
-
-                <VerticalProblem
-                  num1={currentEx.num1} num2={currentEx.num2} type={currentEx.type}
-                  resTens={resTens} setResTens={setResTens} resOnes={resOnes} setResOnes={setResOnes}
-                  carryTens={carryTens} setCarryTens={setCarryTens} carryOnes={carryOnes} setCarryOnes={setCarryOnes}
-                  gender={gender}
+              <div className="relative z-10 w-full h-3 bg-slate-200">
+                <motion.div
+                  className="h-full bg-gradient-to-l from-indigo-500 to-purple-500 shadow-[0_0_15px_rgba(99,102,241,0.5)] rounded-r-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${((exerciseIdx + (taskIdx * EXERCISES_PER_TASK)) / (EXERCISES_PER_TASK * TASKS_PER_CHALLENGE)) * 100}%` }}
+                  transition={{ duration: 0.5, type: "spring" }}
                 />
-
-                <button
-                  onClick={checkAnswer}
-                  disabled={(!resOnes && !resTens) || isChecking}
-                  className={`mt-8 w-full py-4 text-white rounded-2xl font-bold text-xl transition-all shadow-lg flex items-center justify-center gap-2
-                    ${isSuccessAction ? 'bg-green-500 shadow-[0_0_15px_rgba(34,197,94,0.6)]' : 'bg-gradient-to-l from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed'}`}
-                >
-                  {isSuccessAction ? 'כל הכבוד! ✅' : t('בדיקה', 'בדיקה')}
-                </button>
               </div>
-            </div>
 
-            {/* Bonus Logic */}
-            {bonusActive && (
-              <div
-                onClick={handleBonusCatch}
-                className="absolute z-50 cursor-pointer transition-all duration-300 hover:scale-125"
-                style={{ top: bonusPos.top, left: bonusPos.left }}
-              >
-                <div className="bg-white/95 p-4 rounded-full shadow-[0_0_30px_rgba(244,63,94,0.6)] backdrop-blur-sm border border-red-200">
-                  <Heart fill="#f43f5e" stroke="#f43f5e" size={50} className="animate-bounce drop-shadow-lg" />
-                </div>
-              </div>
-            )}
-            {bonusMessageVisible && (
-              <div className="absolute top-[20%] left-1/2 -translate-x-1/2 z-40 bg-yellow-400 text-black font-bold px-8 py-4 rounded-full shadow-2xl border-4 border-white text-lg text-center whitespace-nowrap animate-bounce">
-                {t('פתרת נכון 4 תרגילים ברצף! יש לך 6 שניות לתפוס את הלב!', 'פתרת נכון 4 תרגילים ברצף! יש לך 6 שניות לתפוס את הלב!')}
-              </div>
-            )}
+              <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-4">
+                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="bg-white p-8 md:p-10 rounded-[3rem] shadow-2xl border-[6px] border-slate-100 min-w-[380px] relative">
 
-            {/* Special Animation 67 */}
-            {showSpecialAnim && (
-              <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                <div className="flex items-center gap-6 bg-white p-8 rounded-full shadow-[0_0_50px_rgba(255,255,255,0.6)] border-8 border-yellow-300">
-                  <span className="font-extrabold text-7xl text-blue-600 drop-shadow-md">7</span>
-                  <div className="flex gap-2 relative top-2">
-                    <span className="anim-hand-left text-[80px]">🫱</span>
-                    <span className="text-[80px] -mt-4">🤩</span>
-                    <span className="anim-hand-right text-[80px]">🫲</span>
-                  </div>
-                  <span className="font-extrabold text-7xl text-pink-600 drop-shadow-md">6</span>
-                </div>
-              </div>
-            )}
-
-            {/* Instructions */}
-            {showInstructions && (
-              <div className="absolute inset-0 z-50 bg-black/80 flex items-center justify-center p-6 backdrop-blur-sm">
-                <div className="bg-white p-8 rounded-3xl max-w-lg w-full relative max-h-[90vh] overflow-y-auto">
-                  <button onClick={() => setShowInstructions(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-800"><X size={32} /></button>
-                  <h2 className="text-3xl font-bold mb-6 text-blue-600 border-b pb-4">איך משחקים?</h2>
-                  <ul className="space-y-4 text-lg text-slate-700">
-                    <li className="flex items-start gap-3"><Timer className="text-blue-500 shrink-0 mt-1" /> <div><b>הזמן רץ!</b> פתרו את התרגילים לפני שהשעון יתאפס.</div></li>
-                    <li className="flex items-start gap-3"><Heart className="text-red-500 shrink-0 mt-1" fill="#f43f5e" /> <div><b>לבבות:</b> טעות או חריגה מהזמן מורידות לב. נגמרו הלבבות? מתחילים מהתחלה.</div></li>
-                    <li className="flex items-start gap-3"><span className="text-2xl shrink-0 leading-none">✍️</span> <div><b>המרות:</b> השתמשו בריבועים העליונים כדי לכתוב המרות (עשרות או אחדות). כשמקלידים המרה, הספרה למטה תימחק בקו!</div></li>
-                    <li className="flex items-start gap-3"><span className="text-2xl shrink-0 leading-none">🎁</span> <div><b>בונוס:</b> 4 תשובות נכונות ברצף יעניקו לכם לב מתנה שיופיע על המסך לזמן מוגבל.</div></li>
-                  </ul>
-                  <button onClick={() => setShowInstructions(false)} className="mt-8 w-full py-4 bg-green-500 text-white rounded-xl font-bold text-xl hover:bg-green-600 shadow-md">הבנתי, בואו נמשיך!</button>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* --- FEEDBACK SCREEN --- */}
-        {screen === 'feedback' && (
-          <div className="relative flex-1 flex flex-col items-center justify-center p-4 md:p-8 bg-cover bg-center overflow-y-auto" style={{ backgroundImage: `url(${theme.bg})` }}>
-            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-
-            <button onClick={() => setScreen('map')} className="absolute top-4 right-4 z-20 flex items-center gap-2 bg-black/40 hover:bg-black/60 text-white px-4 py-2 rounded-full transition-colors font-bold border border-white/20">
-              <Home size={20} /> חזרה למפה
-            </button>
-
-            <div className="relative z-10 p-6 md:p-8 rounded-3xl shadow-2xl w-full max-w-md flex flex-col items-center bg-white border-t-8 border-red-500 my-auto">
-
-              {feedbackType === 'timeout' && (
-                <div className="text-center mb-6">
-                  <Timer size={64} className="text-red-500 mx-auto mb-4" />
-                  <h2 className="text-3xl font-bold text-red-600">אוי, הזמן נגמר!</h2>
-                  <p className="text-slate-600 mt-2 font-medium">אל דאגה, בואו נראה איך פותרים את זה:</p>
-                </div>
-              )}
-
-              {feedbackType === 'error' && (
-                <div className="text-center mb-6">
-                  <XCircle size={64} className="text-red-500 mx-auto mb-4 animate-bounce" />
-                  <h2 className="text-3xl font-bold text-red-600">{t('לא נורא, תטעה ותלמד!', 'לא נורא, תטעי ותלמדי!')}</h2>
-                  {confusedOperation && (
-                    <div className="bg-orange-100 text-orange-800 p-3 rounded-xl mt-4 font-bold border border-orange-200 shadow-sm text-sm">
-                      נראה שהתבלבלת בין חיבור לחיסור! שימו לב לסימן.
+                  <div className="flex justify-between items-center mb-8 pb-6 border-b-2 border-slate-100">
+                    <div className="text-sm font-black bg-indigo-50 text-indigo-600 px-5 py-2.5 rounded-2xl border border-indigo-100 tracking-wide">
+                      תרגיל {exerciseIdx + 1}/8
                     </div>
-                  )}
-                  <p className="text-slate-600 mt-4 font-medium">הנה הפתרון הנכון במאונך:</p>
+                    <motion.div animate={timeLeft < 10 ? { scale: [1, 1.1, 1], color: ['#ef4444', '#b91c1c', '#ef4444'] } : {}} transition={{ repeat: Infinity, duration: 0.5 }} className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl border-2 font-mono font-black text-2xl shadow-sm ${timeLeft < 10 ? 'bg-red-50 border-red-200 text-red-600' : 'bg-slate-50 border-slate-200 text-slate-700'}`}>
+                      <Timer size={24} /> {timeLeft}
+                    </motion.div>
+                  </div>
+
+                  <VerticalProblem
+                    num1={currentEx.num1} num2={currentEx.num2} type={currentEx.type}
+                    resTens={resTens} setResTens={setResTens} resOnes={resOnes} setResOnes={setResOnes}
+                    carryTens={carryTens} setCarryTens={setCarryTens} carryOnes={carryOnes} setCarryOnes={setCarryOnes}
+                    gender={gender}
+                  />
+
+                  <motion.button whileHover={{ scale: (!resOnes && !resTens) || isChecking ? 1 : 1.05 }} whileTap={{ scale: (!resOnes && !resTens) || isChecking ? 1 : 0.95 }}
+                    onClick={checkAnswer}
+                    disabled={(!resOnes && !resTens) || isChecking}
+                    className={`mt-10 w-full py-5 text-white rounded-2xl font-black text-2xl transition-all shadow-lg flex items-center justify-center gap-3 border-b-4 
+                    ${isSuccessAction ? 'bg-emerald-500 border-emerald-700 shadow-[0_0_20px_rgba(16,185,129,0.5)]' : 'bg-indigo-500 border-indigo-700 hover:bg-indigo-400 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-400 disabled:border-slate-500'}`}
+                  >
+                    {isSuccessAction ? 'כל הכבוד! ✨' : t('בדיקה', 'בדיקה')}
+                  </motion.button>
+                </motion.div>
+              </div>
+
+              {/* Bonus Logic */}
+              <AnimatePresence>
+                {bonusActive && (
+                  <motion.div initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0, opacity: 0 }}
+                    onClick={handleBonusCatch}
+                    className="absolute z-50 cursor-pointer"
+                    style={{ top: bonusPos.top, left: bonusPos.left }}
+                  >
+                    <motion.div animate={{ y: [-10, 10, -10] }} transition={{ repeat: Infinity, duration: 1.5 }} className="bg-white/95 p-5 rounded-full shadow-[0_0_40px_rgba(244,63,94,0.8)] backdrop-blur-md border-4 border-rose-200">
+                      <Heart fill="#f43f5e" stroke="#f43f5e" size={60} className="animate-pulse drop-shadow-xl" />
+                    </motion.div>
+                  </motion.div>
+                )}
+                {bonusMessageVisible && (
+                  <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -50, opacity: 0 }} className="absolute top-[15%] left-1/2 -translate-x-1/2 z-40 bg-yellow-400 text-slate-900 font-black px-8 py-4 rounded-full shadow-2xl border-4 border-white text-xl text-center whitespace-nowrap">
+                    {t('פתרת נכון 4 תרגילים ברצף! תפוס את הלב!', 'פתרת נכון 4 תרגילים ברצף! תפסי את הלב!')}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Special Animation 67 */}
+              <AnimatePresence>
+                {showSpecialAnim && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-md">
+                    <motion.div initial={{ scale: 0.5, rotate: -10 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", bounce: 0.5 }} className="flex items-center gap-6 bg-white p-12 rounded-full shadow-[0_0_80px_rgba(255,255,255,0.8)] border-[12px] border-yellow-400">
+                      <span className="font-black text-9xl text-indigo-600 drop-shadow-lg">7</span>
+                      <div className="flex gap-2 relative top-4">
+                        <span className="anim-hand-left text-[100px]">🫱</span>
+                        <span className="text-[100px] -mt-6">🤩</span>
+                        <span className="anim-hand-right text-[100px]">🫲</span>
+                      </div>
+                      <span className="font-black text-9xl text-pink-500 drop-shadow-lg">6</span>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Instructions Modal */}
+              <AnimatePresence>
+                {showInstructions && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-6 backdrop-blur-md">
+                    <motion.div initial={{ y: 50, scale: 0.9 }} animate={{ y: 0, scale: 1 }} exit={{ y: 20, scale: 0.9 }} className="bg-white p-10 rounded-[3rem] max-w-xl w-full relative shadow-2xl border-4 border-indigo-100">
+                      <button onClick={() => setShowInstructions(false)} className="absolute top-6 right-6 text-slate-400 hover:text-slate-800 bg-slate-100 p-2 rounded-full"><X size={28} /></button>
+                      <h2 className="text-4xl font-black mb-8 text-indigo-600 border-b-4 border-indigo-50 pb-4">איך משחקים?</h2>
+                      <ul className="space-y-6 text-xl text-slate-700 font-medium">
+                        <li className="flex items-start gap-4 bg-slate-50 p-4 rounded-2xl"><Timer className="text-indigo-500 shrink-0 mt-1" size={32} /> <div><b className="text-slate-900">הזמן רץ!</b> פתרו את התרגילים לפני שהשעון יתאפס.</div></li>
+                        <li className="flex items-start gap-4 bg-rose-50 p-4 rounded-2xl"><Heart className="text-rose-500 shrink-0 mt-1" fill="#f43f5e" size={32} /> <div><b className="text-slate-900">לבבות:</b> טעות או חריגה מהזמן מורידות לב. נגמרו הלבבות? מתחילים מהתחלה.</div></li>
+                        <li className="flex items-start gap-4 bg-blue-50 p-4 rounded-2xl"><span className="text-3xl shrink-0 leading-none">✍️</span> <div><b className="text-slate-900">המרות:</b> השתמשו בריבועים העליונים כדי לכתוב המרות. הספרה שהוחלפה תימחק בקו!</div></li>
+                        <li className="flex items-start gap-4 bg-yellow-50 p-4 rounded-2xl"><span className="text-3xl shrink-0 leading-none">🎁</span> <div><b className="text-slate-900">בונוס:</b> 4 תשובות נכונות ברצף יעניקו לכם לב מתנה שיופיע על המסך.</div></li>
+                      </ul>
+                      <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setShowInstructions(false)} className="mt-10 w-full py-5 bg-indigo-600 text-white rounded-2xl font-black text-2xl shadow-lg">הבנתי, בואו נמשיך!</motion.button>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          )}
+
+          {/* --- FEEDBACK SCREEN --- */}
+          {screen === 'feedback' && (
+            <motion.div key="feedback" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="relative flex-1 flex flex-col items-center justify-center p-4 md:p-8 bg-cover bg-center overflow-y-auto" style={{ backgroundImage: `url(${theme.bg})` }}>
+              <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-lg" />
+
+              <button onClick={() => setScreen('map')} className="absolute top-6 right-6 z-20 flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-5 py-2.5 rounded-full transition-colors font-bold border border-white/20 backdrop-blur-md">
+                <Home size={20} /> חזרה למפה
+              </button>
+
+              <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="relative z-10 p-8 md:p-10 rounded-[3rem] shadow-2xl w-full max-w-lg flex flex-col items-center bg-white border-t-[12px] border-rose-500 my-auto">
+
+                {feedbackType === 'timeout' && (
+                  <div className="text-center mb-8">
+                    <motion.div animate={{ rotate: [-10, 10, -10] }} transition={{ repeat: Infinity, duration: 1 }}>
+                      <Timer size={80} className="text-rose-500 mx-auto mb-4 drop-shadow-md" />
+                    </motion.div>
+                    <h2 className="text-4xl font-black text-rose-600">אוי, הזמן נגמר!</h2>
+                    <p className="text-slate-600 mt-3 text-xl font-medium">אל דאגה, בואו נראה איך פותרים את זה:</p>
+                  </div>
+                )}
+
+                {feedbackType === 'error' && (
+                  <div className="text-center mb-8">
+                    <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 2 }}>
+                      <XCircle size={80} className="text-rose-500 mx-auto mb-4 drop-shadow-md" />
+                    </motion.div>
+                    <h2 className="text-4xl font-black text-rose-600">{t('לא נורא, תטעה ותלמד!', 'לא נורא, תטעי ותלמדי!')}</h2>
+                    {confusedOperation && (
+                      <div className="bg-orange-100 text-orange-800 p-4 rounded-2xl mt-5 font-black border-2 border-orange-200 shadow-sm text-lg">
+                        נראה שהתבלבלת בין חיבור לחיסור! שימו לב לסימן.
+                      </div>
+                    )}
+                    <p className="text-slate-600 mt-5 text-xl font-medium">הנה הפתרון הנכון במאונך:</p>
+                  </div>
+                )}
+
+                <div className="p-6 bg-slate-50 rounded-[2rem] mb-8 w-full border-4 border-slate-100 shadow-inner flex justify-center transform scale-110">
+                  <VerticalProblem
+                    num1={currentEx.num1} num2={currentEx.num2} type={currentEx.type}
+                    isStatic
+                    correctData={calculateCorrectSolution(currentEx.num1, currentEx.num2, currentEx.type)}
+                    gender={gender}
+                  />
                 </div>
-              )}
 
-              <div className="p-4 md:p-6 bg-slate-50 rounded-2xl mb-6 w-full border border-slate-200 shadow-inner flex justify-center">
-                <VerticalProblem
-                  num1={currentEx.num1} num2={currentEx.num2} type={currentEx.type}
-                  isStatic
-                  correctData={calculateCorrectSolution(currentEx.num1, currentEx.num2, currentEx.type)}
-                  gender={gender}
-                />
-              </div>
+                <div className="flex items-center gap-4 mb-8 bg-rose-50 px-8 py-4 rounded-2xl border-2 border-rose-100 w-full justify-center shadow-sm">
+                  <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1.5 }}>
+                    <Heart fill="#f43f5e" stroke="#f43f5e" size={32} className="drop-shadow-sm" />
+                  </motion.div>
+                  <span className="text-2xl font-black text-rose-600">נשארו לך {hearts} לבבות</span>
+                </div>
 
-              <div className="flex items-center gap-3 mb-6 bg-red-50 px-6 py-3 rounded-full border border-red-100 w-full justify-center">
-                <Heart fill="#f43f5e" stroke="#f43f5e" size={28} className="animate-pulse" />
-                <span className="text-xl font-bold text-red-600">נשארו לך {hearts} לבבות</span>
-              </div>
-
-              <button
-                onClick={advanceProgress}
-                className="relative overflow-hidden w-full py-4 bg-blue-600 text-white rounded-xl font-bold text-xl shadow-lg flex items-center justify-center gap-2 group hover:bg-blue-700 transition-colors"
-              >
-                <div className="absolute left-0 top-0 h-full bg-black/20 transition-all duration-1000 ease-linear" style={{ width: `${(feedbackCountdown / 30) * 100}%` }}></div>
-                <span className="relative z-10 flex items-center gap-2">
-                  {t('ממשיכים לתרגיל הבא', 'ממשיכות לתרגיל הבא')} <ArrowLeft />
-                  <span className="bg-white/20 px-3 py-1 rounded-full text-sm shadow-inner">{feedbackCountdown}</span>
-                </span>
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* --- GAME OVER SCREEN --- */}
-        {screen === 'gameOver' && (
-          <div className="flex flex-col items-center justify-center flex-1 p-8 bg-red-600 text-white text-center relative overflow-hidden">
-            <RefreshCcw size={100} className="mb-8 animate-spin-slow opacity-50 absolute -right-10 -top-10" />
-            <div className="relative z-10">
-              <h2 className="text-6xl font-bold mb-6">אופס, נגמרו הלבבות!</h2>
-              <p className="text-2xl mb-12 max-w-lg mx-auto">{userName}, לא קרה כלום. כל {t('גיבור', 'גיבורה')} צריכים להתאמן קצת יותר לפעמים!</p>
-              <button
-                onClick={resetGame}
-                className="px-10 py-5 bg-white text-red-600 rounded-full font-bold text-3xl hover:scale-105 transition-transform shadow-2xl flex items-center gap-4 mx-auto"
-              >
-                <RefreshCcw size={32} /> מתחילים מההתחלה
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* --- VICTORY SCREEN --- */}
-        {screen === 'victory' && (
-          <div className="flex flex-col items-center justify-center flex-1 p-8 bg-gradient-to-br from-green-400 to-blue-500 text-white text-center relative overflow-hidden">
-            {Array.from({ length: 80 }).map((_, i) => (
-              <span key={i} className="confetti" style={{ left: `${Math.random() * 100}%`, animationDelay: `${Math.random() * 3}s` }}>🎉</span>
-            ))}
-            <div className="relative z-10">
-              <Star size={120} fill="yellow" className="text-yellow-400 mb-6 animate-pulse drop-shadow-[0_0_30px_rgba(253,224,71,0.8)] mx-auto" />
-              <h2 className="text-6xl font-bold mb-4">ניצחון אדיר! 🏆</h2>
-              <p className="text-3xl mb-12 max-w-xl mx-auto leading-relaxed font-medium">כל הכבוד {userName}! סיימת את כל האתגרים של ב'2 והוכחת שאת/ה {t('אלוף', 'אלופה')} אמיתי/ת בחשבון!</p>
-              <div className="flex gap-4 justify-center">
-                <button
-                  onClick={() => setScreen('shareCertificate')}
-                  className="px-8 py-4 bg-purple-600 text-white rounded-full font-bold text-2xl hover:bg-purple-500 transition-colors shadow-xl flex items-center gap-2"
+                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                  onClick={advanceProgress}
+                  className="relative overflow-hidden w-full py-5 bg-indigo-600 text-white rounded-2xl font-black text-2xl shadow-lg flex items-center justify-center gap-3 group border-b-4 border-indigo-800"
                 >
-                  <Download /> התעודה שלי
-                </button>
-                <button
+                  <div className="absolute left-0 top-0 h-full bg-white/20 transition-all duration-1000 ease-linear" style={{ width: `${(feedbackCountdown / 30) * 100}%` }}></div>
+                  <span className="relative z-10 flex items-center gap-3">
+                    {t('ממשיכים לתרגיל הבא', 'ממשיכות לתרגיל הבא')} <ArrowLeft strokeWidth={3} />
+                    <span className="bg-black/20 px-4 py-1.5 rounded-xl text-lg shadow-inner border border-white/10">{feedbackCountdown}</span>
+                  </span>
+                </motion.button>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {/* --- CHALLENGE COMPLETE SCREEN --- */}
+          {screen === 'challengeComplete' && (
+            <motion.div key="challengeComplete" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 p-8 bg-gradient-to-br from-indigo-600 via-purple-600 to-fuchsia-600 text-white text-center relative overflow-hidden">
+
+              <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="relative z-10 bg-white/10 p-12 rounded-[3rem] backdrop-blur-xl border border-white/20 shadow-2xl max-w-lg w-full">
+                <h2 className="text-6xl font-black mb-6 text-yellow-300 drop-shadow-lg">אתגר הושלם!</h2>
+                <p className="text-3xl mb-8 font-medium text-indigo-100">כל הכבוד <span className="font-black text-white">{userName}</span>, סיימת את אתגר ה{theme.name}!</p>
+
+                <div className="bg-white/20 rounded-[2rem] p-8 mb-10 inline-block shadow-inner border border-white/20 backdrop-blur-sm">
+                  <p className="text-xl font-bold mb-4 opacity-90">הפרס החדש שלך:</p>
+                  <motion.div animate={{ y: [-10, 10, -10], scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 3 }} className="text-9xl drop-shadow-2xl">
+                    {theme.prize}
+                  </motion.div>
+                </div>
+
+                <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                  onClick={handleChallengeCompleteToMap}
+                  className="px-10 py-5 bg-emerald-500 rounded-full font-black text-2xl shadow-[0_10px_25px_-5px_rgba(16,185,129,0.5)] flex items-center gap-3 border-4 border-emerald-400 w-full justify-center"
+                >
+                  <Map size={28} /> חזרה למפה
+                </motion.button>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {/* --- SHARE CERTIFICATE SCREEN --- */}
+          {screen === 'shareCertificate' && (
+            <motion.div key="certificate" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col flex-1 bg-slate-100 items-center justify-center p-6 relative overflow-y-auto bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-100 via-slate-100 to-slate-200">
+
+              <motion.div initial={{ y: -20 }} animate={{ y: 0 }} id="certificate-render" className="bg-white p-12 rounded-[3rem] shadow-2xl border-[12px] border-yellow-400 max-w-2xl w-full text-center relative mb-8 relative">
+                <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none rounded-[2rem]" style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/cubes.png')` }}></div>
+                <Star className="absolute top-8 right-8 text-yellow-400 drop-shadow-md" size={60} fill="yellow" />
+                <Star className="absolute top-8 left-8 text-yellow-400 drop-shadow-md" size={60} fill="yellow" />
+
+                <div className="relative z-10">
+                  <Trophy className="mx-auto mb-6 text-yellow-500 drop-shadow-lg" size={90} />
+                  <h2 className="text-6xl font-black text-indigo-800 mb-4 tracking-tight">תעודת הצטיינות</h2>
+                  <p className="text-3xl text-slate-500 mb-8 font-medium">ל{gender === 'male' ? 'שחקן' : 'שחקנית'} ה{t('אלוף', 'אלופה')}:</p>
+                  <div className="inline-block relative mb-10">
+                    <h3 className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 px-10 pb-4 relative z-10">{userName}</h3>
+                    <div className="absolute bottom-0 left-0 w-full h-4 bg-yellow-300 rounded-full opacity-50 transform -skew-x-12"></div>
+                  </div>
+
+                  <p className="font-black text-slate-700 text-2xl mb-6">אלו הפרסים שזכיתי בהם במשחק של ב׳2:</p>
+                  <div className="flex flex-wrap justify-center gap-5 bg-slate-50 p-8 rounded-3xl min-h-[140px] border-4 border-slate-100 shadow-inner">
+                    {earnedPrizes.length > 0
+                      ? earnedPrizes.map((p, i) => <span key={i} className="text-6xl bg-white p-4 rounded-2xl shadow-md border border-slate-100">{p}</span>)
+                      : <span className="text-slate-400 text-xl font-bold flex items-center h-full">עוד אין פרסים, המשיכו לשחק!</span>
+                    }
+                  </div>
+                </div>
+              </motion.div>
+
+              <div className="flex gap-4 w-full max-w-2xl">
+                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                  onClick={downloadAndShareCertificate}
+                  className="flex-1 py-5 bg-indigo-600 text-white rounded-2xl font-black text-2xl shadow-[0_10px_20px_-5px_rgba(79,70,229,0.5)] flex items-center justify-center gap-3 border-b-4 border-indigo-800"
+                >
+                  <Download size={28} /> {t('שתף', 'שתפי')} הישגים
+                </motion.button>
+                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                   onClick={() => setScreen('welcome')}
-                  className="px-8 py-4 bg-white text-green-600 rounded-full font-bold text-2xl hover:scale-105 transition-transform shadow-xl"
+                  className="py-5 px-8 bg-white text-slate-700 rounded-2xl font-black text-xl shadow-md border-b-4 border-slate-200"
                 >
                   למסך הראשי
-                </button>
+                </motion.button>
               </div>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
 
+          {/* --- GAME OVER SCREEN --- */}
+          {screen === 'gameOver' && (
+            <motion.div key="gameOver" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 p-8 bg-rose-600 text-white text-center relative overflow-hidden">
+              <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 20, ease: "linear" }} className="absolute -right-20 -top-20 opacity-20">
+                <RefreshCcw size={300} />
+              </motion.div>
+
+              <div className="relative z-10 bg-white/10 p-12 rounded-[3rem] backdrop-blur-md border border-white/20 shadow-2xl max-w-lg">
+                <h2 className="text-6xl font-black mb-6 drop-shadow-md">אופס, נגמרו הלבבות!</h2>
+                <p className="text-3xl mb-12 opacity-90 font-medium">{userName}, לא קרה כלום.<br />כל {t('גיבור', 'גיבורה')} צריכים להתאמן קצת יותר לפעמים!</p>
+                <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                  onClick={resetGame}
+                  className="px-10 py-5 bg-white text-rose-600 rounded-full font-black text-3xl shadow-xl flex items-center gap-4 mx-auto w-full justify-center"
+                >
+                  <RefreshCcw size={32} strokeWidth={3} /> מתחילים מההתחלה
+                </motion.button>
+              </div>
+            </motion.div>
+          )}
+
+          {/* --- VICTORY SCREEN --- */}
+          {screen === 'victory' && (
+            <motion.div key="victory" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 p-8 bg-gradient-to-br from-emerald-400 via-teal-500 to-indigo-600 text-white text-center relative overflow-hidden">
+
+              <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.3 }} className="relative z-10 bg-black/20 p-14 rounded-[3rem] backdrop-blur-xl border border-white/20 shadow-2xl max-w-2xl">
+                <motion.div animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 2 }}>
+                  <Star size={140} fill="yellow" className="text-yellow-400 mb-8 drop-shadow-[0_0_40px_rgba(253,224,71,0.8)] mx-auto" />
+                </motion.div>
+                <h2 className="text-7xl font-black mb-6 tracking-tight drop-shadow-lg text-transparent bg-clip-text bg-gradient-to-b from-white to-white/80">ניצחון אדיר! 🏆</h2>
+                <p className="text-3xl mb-12 leading-relaxed font-bold text-emerald-50">כל הכבוד <span className="text-yellow-300">{userName}</span>! סיימת את כל האתגרים של ב'2 והוכחת שאת/ה {t('אלוף', 'אלופה')} אמיתי/ת בחשבון!</p>
+
+                <div className="flex flex-col sm:flex-row gap-5 justify-center">
+                  <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                    onClick={() => setScreen('shareCertificate')}
+                    className="px-10 py-5 bg-purple-600 text-white rounded-full font-black text-2xl shadow-[0_10px_25px_-5px_rgba(147,51,234,0.5)] flex items-center justify-center gap-3 border-4 border-purple-400/50"
+                  >
+                    <Download strokeWidth={3} /> התעודה שלי
+                  </motion.button>
+                  <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                    onClick={() => setScreen('welcome')}
+                    className="px-10 py-5 bg-white text-teal-700 rounded-full font-black text-2xl shadow-xl border-4 border-white/50"
+                  >
+                    למסך הראשי
+                  </motion.button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+
+        </AnimatePresence>
       </div>
       <Analytics />
     </div>
