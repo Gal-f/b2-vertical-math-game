@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Heart, Trophy, Timer, Star, ArrowLeft, ArrowRight, User, Play, RefreshCcw, XCircle, Map, HelpCircle, X, Download, Lock, CheckCircle2, Home } from 'lucide-react';
+import { Analytics } from '@vercel/analytics/react';
 
 // --- Constants & Data ---
 const TOTAL_CHALLENGES = 8;
@@ -975,6 +976,7 @@ export default function App() {
         )}
 
       </div>
+      <Analytics />
     </div>
   );
 }
