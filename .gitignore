@@ -4,3 +4,4 @@ dist
 .vite
 .env.local
 npm-debug.log*
+src/App_geminibackup.jsx

@@ -14,7 +14,7 @@ const THEMES = [
   {
     id: 1,
     name: 'מדבר',
-    bg: 'https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?auto=format&fit=crop&q=80&w=1000',
+    bg: 'https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?auto=format&fit=crop&q=80&w=2000',
     avatar: '🐪',
     avatarName: (gender) => gender === 'male' ? 'מלך המדבר' : 'מלכת המדבר',
     prize: '🌵'
@@ -22,7 +22,7 @@ const THEMES = [
   {
     id: 2,
     name: 'חלל',
-    bg: 'https://www.lnk.co.il/wp-content/uploads/2015/07/hs-2009-25-f-xlarge_web-compressor.jpg',
+    bg: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2000',
     avatar: '👨‍🚀',
     avatarName: (gender) => gender === 'male' ? 'האסטרונאוט' : 'האסטרונאוטית',
     prize: '🚀'
@@ -30,7 +30,7 @@ const THEMES = [
   {
     id: 3,
     name: 'ג׳ונגל',
-    bg: 'https://i.natgeofe.com/n/9d4259f8-29a7-47a6-9eeb-28beeeee3f81/13-jungles-hostile-planet-nationalgeographic_2675333.jpg',
+    bg: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&q=80&w=2000',
     avatar: '🐒',
     avatarName: (gender) => gender === 'male' ? 'קוף הרפתקן' : 'קופה הרפתקנית',
     prize: '🍌'
@@ -38,7 +38,7 @@ const THEMES = [
   {
     id: 4,
     name: 'כדורגל',
-    bg: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=1000',
+    bg: 'https://images.unsplash.com/photo-1518605368461-1e1e38ce8058?auto=format&fit=crop&q=80&w=2000',
     avatar: '⚽',
     avatarName: (gender) => gender === 'male' ? 'שחקן הכדורגל' : 'שחקנית הכדורגל',
     prize: '🏆'
@@ -46,7 +46,7 @@ const THEMES = [
   {
     id: 5,
     name: 'מתחת למים',
-    bg: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&q=80&w=1000',
+    bg: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&q=80&w=2000',
     avatar: '🤿',
     avatarName: (gender) => gender === 'male' ? 'הצולל' : 'הצוללת',
     prize: '🐬'
@@ -54,7 +54,7 @@ const THEMES = [
   {
     id: 6,
     name: 'עיר עתידנית',
-    bg: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&q=80&w=1000',
+    bg: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&q=80&w=2000',
     avatar: '🤖',
     avatarName: (gender) => gender === 'male' ? 'הרובוט' : 'הרובוטית',
     prize: '⚙️'
@@ -62,7 +62,7 @@ const THEMES = [
   {
     id: 7,
     name: 'חורף מושלג',
-    bg: 'https://images.unsplash.com/photo-1483664852095-d6cc6870702d?auto=format&fit=crop&q=80&w=1000',
+    bg: 'https://images.unsplash.com/photo-1483664852095-d6cc6870702d?auto=format&fit=crop&q=80&w=2000',
     avatar: '🐧',
     avatarName: (gender) => gender === 'male' ? 'הפינגווין' : 'הפינגווינית',
     prize: '❄️'
@@ -70,7 +70,7 @@ const THEMES = [
   {
     id: 8,
     name: 'ארמון האבירים',
-    bg: 'https://images.unsplash.com/photo-1533154683836-84ea7a0bc310?auto=format&fit=crop&q=80&w=1000',
+    bg: 'https://images.unsplash.com/photo-1533154683836-84ea7a0bc310?auto=format&fit=crop&q=80&w=2000',
     avatar: '🛡️',
     avatarName: (gender) => gender === 'male' ? 'האביר' : 'האבירה',
     prize: '👑'
@@ -192,21 +192,21 @@ const VerticalProblem = ({
   const t = (m, f) => gender === 'male' ? m : f;
 
   return (
-    <div className="flex flex-col items-center justify-center font-mono text-4xl md:text-5xl text-slate-800" dir="ltr">
+    <div className="flex flex-col items-center justify-center font-mono text-4xl md:text-6xl text-slate-800" dir="ltr">
 
       <AnimatePresence>
         <motion.div
           initial={{ opacity: 0, h: 0 }}
           animate={{ opacity: 1, h: 'auto' }}
-          className="min-h-[2rem] text-[10px] md:text-[12px] font-sans text-slate-500 mb-2 font-bold transition-opacity text-center w-full" dir="rtl"
+          className="min-h-[2rem] text-[10px] md:text-[14px] font-sans text-slate-500 mb-2 md:mb-4 font-bold transition-opacity text-center w-full" dir="rtl"
         >
           {activeCarry && !isStatic ? t('כתוב כאן את ההמרה של הספרה שמתחת לריבוע הזה 👇🏼', 'כתבי כאן את ההמרה של הספרה שמתחת לריבוע הזה 👇🏼') : ''}
         </motion.div>
       </AnimatePresence>
 
-      <div className="flex justify-end gap-2 md:gap-3 w-48 md:w-56 mb-3 pr-2 relative">
+      <div className="flex justify-end gap-2 md:gap-4 w-48 md:w-72 mb-3 md:mb-5 pr-2 relative">
         <div className="flex flex-col items-center">
-          <span className="text-[10px] md:text-[12px] text-slate-400 font-sans mb-1 uppercase tracking-wider">המרה</span>
+          <span className="text-[10px] md:text-[14px] text-slate-400 font-sans mb-1 md:mb-2 uppercase tracking-wider">המרה</span>
           {!isStatic ? (
             <motion.input
               whileFocus={{ scale: 1.1, borderColor: '#3b82f6' }}
@@ -215,17 +215,17 @@ const VerticalProblem = ({
               onChange={(e) => setCarryTens(e.target.value.replace(/[^0-9]/g, ''))}
               onFocus={() => setActiveCarry('tens')}
               onBlur={() => setActiveCarry(null)}
-              className="w-12 h-12 md:w-14 md:h-14 border-2 border-dashed border-blue-300 rounded-xl text-center text-xl md:text-2xl bg-blue-50/50 focus:outline-none focus:bg-white shadow-sm transition-colors"
+              className="w-12 h-12 md:w-16 md:h-16 border-2 border-dashed border-blue-300 rounded-xl text-center text-xl md:text-3xl bg-blue-50/50 focus:outline-none focus:bg-white shadow-sm transition-colors"
             />
           ) : (
-            <div className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-red-600 font-bold border-2 border-red-200 bg-red-50 rounded-xl shadow-sm">
+            <div className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center text-xl md:text-3xl text-red-600 font-bold border-2 border-red-200 bg-red-50 rounded-xl shadow-sm">
               {displayCarryTens}
             </div>
           )}
         </div>
 
         <div className="flex flex-col items-center">
-          <span className="text-[10px] md:text-[12px] text-slate-400 font-sans mb-1 uppercase tracking-wider">המרה</span>
+          <span className="text-[10px] md:text-[14px] text-slate-400 font-sans mb-1 md:mb-2 uppercase tracking-wider">המרה</span>
           {!isStatic ? (
             <motion.input
               whileFocus={{ scale: 1.1, borderColor: '#3b82f6' }}
@@ -234,37 +234,37 @@ const VerticalProblem = ({
               onChange={(e) => setCarryOnes(e.target.value.replace(/[^0-9]/g, ''))}
               onFocus={() => setActiveCarry('ones')}
               onBlur={() => setActiveCarry(null)}
-              className="w-12 h-12 md:w-14 md:h-14 border-2 border-dashed border-blue-300 rounded-xl text-center text-xl md:text-2xl bg-blue-50/50 focus:outline-none focus:bg-white shadow-sm transition-colors"
+              className="w-12 h-12 md:w-16 md:h-16 border-2 border-dashed border-blue-300 rounded-xl text-center text-xl md:text-3xl bg-blue-50/50 focus:outline-none focus:bg-white shadow-sm transition-colors"
             />
           ) : (
-            <div className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-red-600 font-bold border-2 border-red-200 bg-red-50 rounded-xl shadow-sm">
+            <div className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center text-xl md:text-3xl text-red-600 font-bold border-2 border-red-200 bg-red-50 rounded-xl shadow-sm">
               {displayCarryOnes}
             </div>
           )}
         </div>
       </div>
 
-      <div className="flex flex-col items-end border-b-4 border-slate-800 pb-3 w-48 md:w-56 pr-2 relative bg-slate-50 rounded-t-2xl p-3 md:p-4 shadow-inner">
-        <span className="absolute left-3 md:left-4 bottom-3 md:bottom-4 text-5xl md:text-6xl text-slate-300 font-black">{type}</span>
+      <div className="flex flex-col items-end border-b-4 md:border-b-[6px] border-slate-800 pb-3 md:pb-5 w-48 md:w-72 pr-2 relative bg-slate-50 rounded-t-2xl md:rounded-t-3xl p-3 md:p-6 shadow-inner">
+        <span className="absolute left-3 md:left-6 bottom-3 md:bottom-6 text-5xl md:text-7xl text-slate-300 font-black">{type}</span>
 
-        <div className="flex gap-2 md:gap-3 tracking-widest relative z-10">
-          <div className={`w-12 md:w-14 text-center relative ${strikeTens ? "text-slate-400" : "text-slate-700"}`}>
+        <div className="flex gap-2 md:gap-4 tracking-widest relative z-10">
+          <div className={`w-12 md:w-16 text-center relative ${strikeTens ? "text-slate-400" : "text-slate-700"}`}>
             {n1Tens}
-            {strikeTens && <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} className="absolute top-1/2 left-0 h-1.5 bg-red-500 -rotate-12 transform -translate-y-1/2 rounded-full"></motion.div>}
+            {strikeTens && <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} className="absolute top-1/2 left-0 h-1.5 md:h-2 bg-red-500 -rotate-12 transform -translate-y-1/2 rounded-full"></motion.div>}
           </div>
-          <div className={`w-12 md:w-14 text-center relative ${strikeOnes ? "text-slate-400" : "text-slate-700"}`}>
+          <div className={`w-12 md:w-16 text-center relative ${strikeOnes ? "text-slate-400" : "text-slate-700"}`}>
             {n1Ones}
-            {strikeOnes && <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} className="absolute top-1/2 left-0 h-1.5 bg-red-500 -rotate-12 transform -translate-y-1/2 rounded-full"></motion.div>}
+            {strikeOnes && <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} className="absolute top-1/2 left-0 h-1.5 md:h-2 bg-red-500 -rotate-12 transform -translate-y-1/2 rounded-full"></motion.div>}
           </div>
         </div>
 
-        <div className="flex gap-2 md:gap-3 tracking-widest mt-2 md:mt-3 text-slate-700">
-          <div className="w-12 md:w-14 text-center">{n2Tens}</div>
-          <div className="w-12 md:w-14 text-center">{n2Ones}</div>
+        <div className="flex gap-2 md:gap-4 tracking-widest mt-2 md:mt-4 text-slate-700">
+          <div className="w-12 md:w-16 text-center">{n2Tens}</div>
+          <div className="w-12 md:w-16 text-center">{n2Ones}</div>
         </div>
       </div>
 
-      <div className="mt-4 md:mt-6 flex justify-end gap-2 md:gap-3 w-48 md:w-56 pr-2">
+      <div className="mt-4 md:mt-8 flex justify-end gap-2 md:gap-4 w-48 md:w-72 pr-2">
         {!isStatic ? (
           <>
             <motion.input
@@ -276,7 +276,7 @@ const VerticalProblem = ({
                 setResTens(e.target.value.replace(/[^0-9-]/g, ''));
                 if (e.target.value) onesRef.current?.focus();
               }}
-              className="w-12 h-14 md:w-14 md:h-16 border-2 border-slate-300 rounded-xl text-center text-3xl md:text-4xl bg-white focus:outline-none focus:border-green-500 shadow-inner text-slate-800 font-bold transition-all"
+              className="w-12 h-14 md:w-16 md:h-20 border-2 border-slate-300 rounded-xl text-center text-3xl md:text-5xl bg-white focus:outline-none focus:border-green-500 shadow-inner text-slate-800 font-bold transition-all"
             />
             <motion.input
               whileFocus={{ y: -5, boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
@@ -287,13 +287,13 @@ const VerticalProblem = ({
                 setResOnes(e.target.value.replace(/[^0-9]/g, ''));
                 if (e.target.value) tensRef.current?.focus();
               }}
-              className="w-12 h-14 md:w-14 md:h-16 border-2 border-slate-300 rounded-xl text-center text-3xl md:text-4xl bg-white focus:outline-none focus:border-green-500 shadow-inner text-slate-800 font-bold transition-all"
+              className="w-12 h-14 md:w-16 md:h-20 border-2 border-slate-300 rounded-xl text-center text-3xl md:text-5xl bg-white focus:outline-none focus:border-green-500 shadow-inner text-slate-800 font-bold transition-all"
             />
           </>
         ) : (
           <>
-            <div className="w-12 h-14 md:w-14 md:h-16 flex items-center justify-center bg-green-100 rounded-xl text-green-700 font-extrabold border-2 border-green-300 shadow-sm text-3xl md:text-4xl">{displayResTens}</div>
-            <div className="w-12 h-14 md:w-14 md:h-16 flex items-center justify-center bg-green-100 rounded-xl text-green-700 font-extrabold border-2 border-green-300 shadow-sm text-3xl md:text-4xl">{displayResOnes}</div>
+            <div className="w-12 h-14 md:w-16 md:h-20 flex items-center justify-center bg-green-100 rounded-xl text-green-700 font-extrabold border-2 border-green-300 shadow-sm text-3xl md:text-5xl">{displayResTens}</div>
+            <div className="w-12 h-14 md:w-16 md:h-20 flex items-center justify-center bg-green-100 rounded-xl text-green-700 font-extrabold border-2 border-green-300 shadow-sm text-3xl md:text-5xl">{displayResOnes}</div>
           </>
         )}
       </div>
@@ -339,19 +339,38 @@ export default function App() {
 
   const t = useCallback((m, f) => (gender === 'male' ? m : f), [gender]);
 
-  const fireSuccessConfetti = () => {
-    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#22c55e', '#3b82f6', '#fbbf24'] });
+  // CONFETTI HIERARCHY
+  const fireSmallConfetti = () => {
+    // Small, subtle confetti for regular answers
+    confetti({ particleCount: 35, spread: 40, scalar: 0.6, origin: { y: 0.6 }, colors: ['#22c55e', '#3b82f6', '#fbbf24'] });
+  };
+
+  const fireTaskCompleteConfetti = () => {
+    // Medium burst for finishing a task (mid-stage)
+    confetti({ particleCount: 100, spread: 70, scalar: 0.9, origin: { y: 0.6 } });
+  };
+
+  const fireChallengeCompleteConfetti = () => {
+    // Large, multi-layered burst for finishing an entire stage
+    const duration = 2000;
+    const end = Date.now() + duration;
+    (function frame() {
+      confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#fbbf24', '#f43f5e', '#8b5cf6'] });
+      confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#fbbf24', '#f43f5e', '#8b5cf6'] });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    }());
   };
 
   const fireVictoryConfetti = () => {
-    const duration = 5 * 1000;
+    // Massive, continuous burst for beating the game
+    const duration = 8 * 1000;
     const animationEnd = Date.now() + duration;
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
     const interval = setInterval(function () {
       const timeLeft = animationEnd - Date.now();
       if (timeLeft <= 0) return clearInterval(interval);
-      const particleCount = 50 * (timeLeft / duration);
-      confetti(Object.assign({}, defaults, { particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
+      const particleCount = 60 * (timeLeft / duration);
+      confetti(Object.assign({}, defaults, { particleCount, scalar: 1.2, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
     }, 250);
   };
 
@@ -401,9 +420,8 @@ export default function App() {
 
   useEffect(() => {
     if (screen === 'victory') fireVictoryConfetti();
-    if (screen === 'challengeComplete') {
-      confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 } });
-    }
+    if (screen === 'taskTransition') fireTaskCompleteConfetti();
+    if (screen === 'challengeComplete') fireChallengeCompleteConfetti();
   }, [screen]);
 
   const handleTimeout = () => {
@@ -440,7 +458,7 @@ export default function App() {
     }
 
     if (isCorrect) {
-      fireSuccessConfetti();
+      fireSmallConfetti();
       if (currentEx.isSpecial) {
         setShowSpecialAnim(true);
         setTimeout(() => setShowSpecialAnim(false), 3000);
@@ -524,18 +542,6 @@ export default function App() {
       link.download = `התעודה_של_${userName}.png`;
       link.href = dataUrl;
       link.click();
-
-      if (navigator.share) {
-        const blob = await (await fetch(dataUrl)).blob();
-        const file = new File([blob], 'certificate.png', { type: 'image/png' });
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            title: 'התעודה שלי',
-            text: `ההישגים שלי במשחק של ב׳2! פרסים: ${earnedPrizes.join(' ')}`,
-            files: [file]
-          });
-        }
-      }
     } catch (err) {
       console.error('Error creating image', err);
     }
@@ -557,7 +563,16 @@ export default function App() {
 
   const theme = THEMES[challengeIdx] || THEMES[0];
 
-  // Global Styles injection for the fun game font
+  // Dynamic Root Background Image
+  const getRootBackground = () => {
+    if (screen === 'welcome' || screen === 'setup') return 'https://images.unsplash.com/photo-1557682250-33bd709cbe85?auto=format&fit=crop&q=80&w=2000';
+    if (screen === 'map') return 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2000'; // Spacey map
+    if (screen === 'shareCertificate' || screen === 'victory') return 'https://images.unsplash.com/photo-1533134486753-c833f0ed4866?auto=format&fit=crop&q=80&w=2000'; // Bright celebratory
+    if (screen === 'gameOver') return ''; // Solid color
+    return theme.bg;
+  };
+
+  // Global Styles
   useEffect(() => {
     const style = document.createElement('style');
     style.innerHTML = `
@@ -572,129 +587,138 @@ export default function App() {
   }, []);
 
   return (
-    <div className="w-full h-[100dvh] bg-slate-200 p-0 md:p-6 flex items-center justify-center font-sans game-font overflow-hidden" dir="rtl">
-      <div className="w-full h-full max-w-4xl bg-white md:rounded-[2rem] shadow-2xl overflow-hidden relative flex flex-col md:border-4 md:border-slate-300/50">
+    // ABSOLUTE ROOT WRAPPER - Forces dead center, full screen, hosts the background image.
+    <div
+      className="fixed inset-0 w-screen h-screen flex items-center justify-center font-sans game-font overflow-hidden bg-cover bg-center transition-all duration-700 bg-slate-900"
+      dir="rtl"
+      style={{ backgroundImage: `url(${getRootBackground()})` }}
+    >
+      {/* Subtle darkening overlay for the entire background so text remains readable */}
+      <div className="absolute inset-0 bg-black/30 pointer-events-none"></div>
+
+      {/* MAIN APP CONTAINER - Maxims out on desktop, responsive rounded borders */}
+      <div className="w-full h-full md:w-[95vw] md:h-[95vh] max-w-7xl relative flex flex-col md:rounded-[2rem] shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden bg-white/10 backdrop-blur-sm border border-white/20">
 
         <AnimatePresence mode="wait">
 
           {/* --- WELCOME SCREEN --- */}
           {screen === 'welcome' && (
-            <motion.div key="welcome" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 text-center p-6 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white relative">
+            <motion.div key="welcome" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 text-center p-6 relative">
               <motion.div animate={{ rotate: [0, -10, 10, -10, 10, 0] }} transition={{ repeat: Infinity, duration: 2, repeatDelay: 1 }}>
-                <Trophy className="mb-6 w-20 h-20 md:w-28 md:h-28 text-yellow-300 drop-shadow-[0_0_15px_rgba(253,224,71,0.5)]" />
+                <Trophy className="mb-6 w-24 h-24 md:w-32 md:h-32 text-yellow-300 drop-shadow-[0_0_25px_rgba(253,224,71,0.8)]" />
               </motion.div>
-              <h1 className="text-5xl md:text-6xl font-black mb-4 drop-shadow-lg tracking-wide">המשחק של ב׳2</h1>
-              <p className="text-xl md:text-2xl mb-12 max-w-md opacity-90">ברוכים הבאים לאתגר החשבון הגדול! מוכנים לצאת למסע?</p>
+              <h1 className="text-6xl md:text-8xl font-black mb-6 drop-shadow-2xl text-white tracking-wide">המשחק של ב׳2</h1>
+              <p className="text-2xl md:text-3xl mb-12 max-w-2xl text-white font-medium drop-shadow-md">ברוכים הבאים לאתגר החשבון הגדול! מוכנים לצאת למסע?</p>
               <motion.button
                 whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                 onClick={() => setScreen('setup')}
-                className="px-8 md:px-12 py-4 md:py-5 bg-white text-indigo-600 rounded-full font-black text-2xl md:text-3xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.3)] flex items-center gap-3 border-4 border-white/20"
+                className="px-10 md:px-14 py-5 md:py-6 bg-white/90 backdrop-blur-md text-indigo-700 rounded-full font-black text-3xl md:text-4xl shadow-[0_10px_40px_-10px_rgba(255,255,255,0.5)] flex items-center gap-4 hover:bg-white transition-colors border-2 border-white/50"
               >
-                מתחילים! <ArrowLeft strokeWidth={3} className="w-6 h-6 md:w-8 md:h-8" />
+                מתחילים! <ArrowLeft strokeWidth={4} className="w-8 h-8 md:w-10 md:h-10" />
               </motion.button>
             </motion.div>
           )}
 
           {/* --- SETUP SCREEN --- */}
           {screen === 'setup' && (
-            <motion.div key="setup" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 p-6 md:p-8 bg-slate-50 text-slate-800 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-100 via-slate-50 to-slate-200">
-              <User size={48} className="text-indigo-500 mb-4 drop-shadow-md md:w-14 md:h-14" />
-              <h2 className="text-3xl md:text-4xl font-black mb-8 md:mb-10 text-slate-800 tracking-wide">ספרו לנו עליכם</h2>
+            <motion.div key="setup" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 p-6 md:p-8">
+              <div className="bg-white/85 backdrop-blur-xl p-8 md:p-12 rounded-[2rem] md:rounded-[3rem] shadow-2xl border border-white/50 w-full max-w-sm md:max-w-xl text-center">
+                <User size={56} className="text-indigo-600 mb-6 drop-shadow-md mx-auto" />
+                <h2 className="text-4xl md:text-5xl font-black mb-10 text-slate-800 tracking-wide">ספרו לנו עליכם</h2>
 
-              <div className="w-full max-w-sm space-y-6 md:space-y-8">
-                <motion.div variants={staggerItem}>
-                  <label className="block text-base md:text-lg font-bold mb-2 md:mb-3 text-slate-600">איך קוראים לך?</label>
-                  <input
-                    type="text"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
-                    className="w-full p-3 md:p-4 border-4 border-slate-200 rounded-2xl focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none text-center text-xl md:text-2xl font-bold transition-all shadow-sm"
-                    placeholder="השם שלך כאן"
-                  />
-                </motion.div>
+                <div className="space-y-6 md:space-y-8 text-right">
+                  <motion.div variants={staggerItem}>
+                    <label className="block text-lg md:text-xl font-bold mb-3 text-slate-700">איך קוראים לך?</label>
+                    <input
+                      type="text"
+                      value={userName}
+                      onChange={(e) => setUserName(e.target.value)}
+                      className="w-full p-4 md:p-5 border-4 border-white/50 bg-white/60 rounded-2xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/20 outline-none text-center text-2xl md:text-3xl font-bold transition-all shadow-inner"
+                      placeholder="השם שלך כאן"
+                    />
+                  </motion.div>
 
-                <motion.div variants={staggerItem}>
-                  <label className="block text-base md:text-lg font-bold mb-2 md:mb-3 text-slate-600">אני...</label>
-                  <div className="flex flex-row gap-3 md:gap-4">
-                    <motion.button whileHover={{ y: -2 }} whileTap={{ scale: 0.95 }}
-                      onClick={() => setGender('male')}
-                      className={`flex-1 p-3 md:p-4 rounded-2xl border-4 transition-all font-black text-lg md:text-xl flex flex-col items-center gap-2 ${gender === 'male' ? 'bg-indigo-500 text-white border-indigo-600 shadow-lg' : 'bg-white text-slate-500 border-slate-200 hover:border-indigo-300'}`}
-                    >
-                      <span className="text-2xl md:text-3xl">👦</span> שחקן
-                    </motion.button>
-                    <motion.button whileHover={{ y: -2 }} whileTap={{ scale: 0.95 }}
-                      onClick={() => setGender('female')}
-                      className={`flex-1 p-3 md:p-4 rounded-2xl border-4 transition-all font-black text-lg md:text-xl flex flex-col items-center gap-2 ${gender === 'female' ? 'bg-indigo-500 text-white border-indigo-600 shadow-lg' : 'bg-white text-slate-500 border-slate-200 hover:border-indigo-300'}`}
-                    >
-                      <span className="text-2xl md:text-3xl">👧</span> שחקנית
-                    </motion.button>
-                  </div>
-                </motion.div>
+                  <motion.div variants={staggerItem}>
+                    <label className="block text-lg md:text-xl font-bold mb-3 text-slate-700">אני...</label>
+                    <div className="flex flex-row gap-3 md:gap-5">
+                      <motion.button whileHover={{ y: -2 }} whileTap={{ scale: 0.95 }}
+                        onClick={() => setGender('male')}
+                        className={`flex-1 p-4 rounded-2xl border-4 transition-all font-black text-xl md:text-2xl flex flex-col items-center gap-2 ${gender === 'male' ? 'bg-indigo-600 text-white border-indigo-700 shadow-lg' : 'bg-white/60 text-slate-600 border-white/50 hover:bg-white'}`}
+                      >
+                        <span className="text-3xl md:text-4xl">👦</span> שחקן
+                      </motion.button>
+                      <motion.button whileHover={{ y: -2 }} whileTap={{ scale: 0.95 }}
+                        onClick={() => setGender('female')}
+                        className={`flex-1 p-4 rounded-2xl border-4 transition-all font-black text-xl md:text-2xl flex flex-col items-center gap-2 ${gender === 'female' ? 'bg-indigo-600 text-white border-indigo-700 shadow-lg' : 'bg-white/60 text-slate-600 border-white/50 hover:bg-white'}`}
+                      >
+                        <span className="text-3xl md:text-4xl">👧</span> שחקנית
+                      </motion.button>
+                    </div>
+                  </motion.div>
 
-                <motion.div variants={staggerItem}>
-                  <label className="block text-base md:text-lg font-bold mb-2 md:mb-3 text-slate-600">רמת קושי</label>
-                  <div className="flex gap-2 bg-white p-2 rounded-2xl border-4 border-slate-200 shadow-sm">
-                    {['קל', 'בינוני', 'קשה'].map(d => (
-                      <button key={d} onClick={() => setDifficulty(d)}
-                        className={`flex-1 py-2 md:py-3 rounded-xl text-base md:text-lg font-bold transition-all ${difficulty === d ? 'bg-purple-500 text-white shadow-md' : 'bg-transparent text-slate-500 hover:bg-slate-100'}`}
-                      >{d}</button>
-                    ))}
-                  </div>
-                </motion.div>
+                  <motion.div variants={staggerItem}>
+                    <label className="block text-lg md:text-xl font-bold mb-3 text-slate-700">רמת קושי</label>
+                    <div className="flex gap-2 bg-white/60 p-2 rounded-2xl border-4 border-white/50 shadow-inner">
+                      {['קל', 'בינוני', 'קשה'].map(d => (
+                        <button key={d} onClick={() => setDifficulty(d)}
+                          className={`flex-1 py-3 md:py-4 rounded-xl text-lg md:text-xl font-bold transition-all ${difficulty === d ? 'bg-purple-600 text-white shadow-md' : 'bg-transparent text-slate-600 hover:bg-white'}`}
+                        >{d}</button>
+                      ))}
+                    </div>
+                  </motion.div>
 
-                <motion.button whileHover={{ scale: userName ? 1.05 : 1 }} whileTap={{ scale: userName ? 0.95 : 1 }}
-                  disabled={!userName}
-                  onClick={() => setScreen('map')}
-                  className="w-full py-4 md:py-5 mt-2 bg-emerald-500 text-white rounded-2xl font-black text-xl md:text-2xl disabled:opacity-50 disabled:bg-slate-300 disabled:cursor-not-allowed shadow-[0_8px_20px_-5px_rgba(16,185,129,0.5)] flex items-center justify-center gap-3 transition-all"
-                >
-                  {t('מוכן?', 'מוכנה?')} <ArrowLeft strokeWidth={3} className="w-6 h-6 md:w-7 md:h-7" />
-                </motion.button>
+                  <motion.button whileHover={{ scale: userName ? 1.05 : 1 }} whileTap={{ scale: userName ? 0.95 : 1 }}
+                    disabled={!userName}
+                    onClick={() => setScreen('map')}
+                    className="w-full py-5 mt-4 bg-emerald-500 text-white rounded-2xl font-black text-2xl md:text-3xl disabled:opacity-50 disabled:bg-slate-400 disabled:cursor-not-allowed shadow-[0_8px_25px_-5px_rgba(16,185,129,0.6)] flex items-center justify-center gap-3 transition-all border-b-4 border-emerald-700"
+                  >
+                    {t('מוכן?', 'מוכנה?')} <ArrowLeft strokeWidth={4} className="w-7 h-7 md:w-8 md:h-8" />
+                  </motion.button>
+                </div>
               </div>
             </motion.div>
           )}
 
           {/* --- MAP SCREEN --- */}
           {screen === 'map' && (
-            <motion.div key="map" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col flex-1 bg-slate-900 text-white relative overflow-hidden">
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 pointer-events-none"></div>
-
-              <div className="p-4 md:p-5 bg-slate-900/90 backdrop-blur-md flex justify-between items-center shadow-xl z-20 border-b border-slate-700/50">
-                <h2 className="text-xl md:text-2xl font-black flex items-center gap-2 md:gap-3"><Map className="text-indigo-400 w-5 h-5 md:w-6 md:h-6" /> מפת האתגרים</h2>
-                <div className="flex items-center gap-2 text-yellow-400 font-bold bg-slate-800 px-3 py-1.5 md:px-5 md:py-2 text-sm md:text-base rounded-full border-2 border-slate-700 shadow-inner">
-                  <Trophy className="w-4 h-4 md:w-5 md:h-5" /> {earnedPrizes.length === 0 ? 'אין' : earnedPrizes.join(' ')}
+            <motion.div key="map" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col flex-1 relative overflow-hidden text-white">
+              <div className="p-5 md:p-8 bg-black/40 backdrop-blur-md flex justify-between items-center shadow-xl z-20 border-b border-white/10">
+                <h2 className="text-2xl md:text-4xl font-black flex items-center gap-3 md:gap-4 drop-shadow-md"><Map className="text-indigo-300 w-8 h-8 md:w-10 md:h-10" /> מפת האתגרים</h2>
+                <div className="flex items-center gap-3 text-yellow-300 font-bold bg-black/40 px-5 py-2.5 md:px-6 md:py-3 text-sm md:text-xl rounded-full border border-white/20 shadow-inner backdrop-blur-sm">
+                  <Trophy className="w-5 h-5 md:w-6 md:h-6" /> {earnedPrizes.length === 0 ? 'אין' : earnedPrizes.join(' ')}
                 </div>
               </div>
 
-              <div className="flex-1 p-4 md:p-6 flex flex-col items-center justify-start gap-4 md:gap-6 relative overflow-y-auto pb-20">
-                <div className="w-2 md:w-3 h-full bg-slate-800 absolute left-1/2 -translate-x-1/2 rounded-full shadow-inner"></div>
+              <div className="flex-1 p-6 md:p-10 flex flex-col items-center justify-start gap-6 md:gap-10 relative overflow-y-auto pb-20">
+                <div className="w-3 md:w-4 h-full bg-white/20 backdrop-blur-sm absolute left-1/2 -translate-x-1/2 rounded-full shadow-inner border-x border-white/10"></div>
 
-                <motion.div variants={staggerContainer} initial="hidden" animate="show" className="w-full flex flex-col items-center gap-4 md:gap-6">
+                <motion.div variants={staggerContainer} initial="hidden" animate="show" className="w-full flex flex-col items-center gap-6 md:gap-10">
                   {THEMES.map((th, idx) => {
                     const isUnlocked = idx <= challengeIdx;
                     const isCurrent = idx === challengeIdx;
                     const isDone = idx < challengeIdx;
                     return (
-                      <motion.div variants={staggerItem} key={th.id} className="relative z-10 w-full max-w-xs md:max-w-md">
+                      <motion.div variants={staggerItem} key={th.id} className="relative z-10 w-full max-w-sm md:max-w-2xl">
                         <motion.button whileHover={isCurrent ? { scale: 1.05 } : {}} whileTap={isCurrent ? { scale: 0.98 } : {}}
                           onClick={() => isCurrent && setScreen('challengeIntro')}
                           disabled={!isCurrent}
-                          className={`w-full p-4 md:p-5 rounded-3xl md:rounded-[2rem] border-4 transition-all flex items-center gap-3 md:gap-5 relative overflow-hidden
-                          ${isCurrent ? 'bg-gradient-to-r from-indigo-600 to-blue-500 border-yellow-400 shadow-[0_0_30px_rgba(99,102,241,0.5)] cursor-pointer' :
-                              isDone ? 'bg-emerald-600 border-emerald-400 opacity-90' :
-                                'bg-slate-800 border-slate-700 opacity-60 cursor-not-allowed'}`}
+                          className={`w-full p-5 md:p-8 rounded-[2rem] md:rounded-[3rem] border-4 transition-all flex items-center gap-5 md:gap-8 relative overflow-hidden backdrop-blur-xl
+                          ${isCurrent ? 'bg-indigo-600/80 border-yellow-400 shadow-[0_0_50px_rgba(253,224,71,0.4)] cursor-pointer' :
+                              isDone ? 'bg-emerald-600/80 border-emerald-300 opacity-95' :
+                                'bg-slate-900/60 border-slate-600/50 opacity-60 cursor-not-allowed'}`}
                         >
                           {isCurrent && <div className="absolute inset-0 bg-white/10 animate-pulse pointer-events-none"></div>}
 
-                          <div className="text-4xl md:text-5xl bg-black/20 p-2 md:p-3 rounded-2xl shadow-inner backdrop-blur-sm">
-                            {isDone ? th.prize : isUnlocked ? th.avatar : <Lock className="text-slate-400 w-8 h-8 md:w-10 md:h-10" />}
+                          <div className="text-5xl md:text-7xl bg-black/30 p-4 md:p-6 rounded-3xl shadow-inner backdrop-blur-sm border border-white/10">
+                            {isDone ? th.prize : isUnlocked ? th.avatar : <Lock className="text-white/40 w-12 h-12 md:w-16 md:h-16" />}
                           </div>
                           <div className="flex-1 text-right">
-                            <div className="font-black text-xl md:text-2xl mb-1 tracking-wide">{th.name}</div>
-                            <div className="text-xs md:text-sm font-bold opacity-80 bg-black/20 inline-block px-2 py-1 md:px-3 rounded-full">
+                            <div className="font-black text-2xl md:text-4xl mb-2 tracking-wide drop-shadow-md">{th.name}</div>
+                            <div className="text-sm md:text-lg font-bold opacity-90 bg-black/40 inline-block px-4 py-1.5 md:px-5 md:py-2 rounded-full border border-white/10">
                               {isDone ? 'הושלם! 🎉' : isCurrent ? 'האתגר הבא שלך' : 'נעול'}
                             </div>
                           </div>
-                          {isCurrent && <Play className="text-yellow-400 ml-1 w-6 h-6 md:w-8 md:h-8" fill="currentColor" />}
+                          {isCurrent && <Play className="text-yellow-300 ml-2 w-10 h-10 md:w-14 md:h-14 drop-shadow-[0_0_15px_rgba(253,224,71,0.8)]" fill="currentColor" />}
                         </motion.button>
                       </motion.div>
                     );
@@ -706,24 +730,22 @@ export default function App() {
 
           {/* --- CHALLENGE INTRO SCREEN --- */}
           {screen === 'challengeIntro' && (
-            <motion.div key="intro" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 text-center p-4 md:p-6 text-white relative bg-cover bg-center" style={{ backgroundImage: `url(${theme.bg})` }}>
-              <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
-
-              <button onClick={() => setScreen('map')} className="absolute top-4 right-4 md:top-6 md:right-6 z-20 flex items-center gap-2 bg-black/40 hover:bg-black/60 px-4 py-2 md:px-5 md:py-2.5 rounded-full transition-colors font-bold text-sm md:text-base border border-white/20 backdrop-blur-md">
-                <Home size={18} /> חזרה למפה
+            <motion.div key="intro" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 text-center p-6 text-white relative">
+              <button onClick={() => setScreen('map')} className="absolute top-6 right-6 md:top-8 md:right-8 z-20 flex items-center gap-3 bg-black/50 hover:bg-black/70 px-5 py-3 md:px-6 md:py-3 rounded-full transition-colors font-bold text-sm md:text-lg border border-white/20 backdrop-blur-md">
+                <Home size={22} /> חזרה למפה
               </button>
 
-              <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ type: "spring", delay: 0.2 }} className="relative z-10 bg-white/10 p-6 md:p-14 rounded-3xl md:rounded-[3rem] border-2 border-white/20 backdrop-blur-xl shadow-2xl max-w-sm md:max-w-xl w-full">
-                <motion.div animate={{ y: [-10, 10, -10] }} transition={{ repeat: Infinity, duration: 4 }} className="text-[5rem] md:text-[6rem] mb-4 md:mb-6 drop-shadow-2xl leading-none">
+              <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ type: "spring", delay: 0.2 }} className="relative z-10 bg-black/40 p-8 md:p-16 rounded-[3rem] border border-white/30 backdrop-blur-xl shadow-2xl max-w-sm md:max-w-2xl w-full">
+                <motion.div animate={{ y: [-10, 10, -10] }} transition={{ repeat: Infinity, duration: 4 }} className="text-[6rem] md:text-[8rem] mb-6 md:mb-8 drop-shadow-[0_0_30px_rgba(255,255,255,0.4)] leading-none">
                   {theme.avatar}
                 </motion.div>
-                <h2 className="text-3xl md:text-5xl font-black mb-2 md:mb-4 drop-shadow-lg">{t('ברוך הבא', 'ברוכה הבאה')} ל{theme.name}!</h2>
-                <p className="text-lg md:text-2xl mb-8 md:mb-10 text-white/90 leading-relaxed font-medium">
-                  <span className="font-black text-yellow-300">{userName}</span>, {theme.avatarName(gender)} שלנו {theme.avatar}, {t('בוא נראה מה אתה יודע', 'בואי נראה מה את יודעת')}.
+                <h2 className="text-4xl md:text-6xl font-black mb-4 md:mb-6 drop-shadow-lg">{t('ברוך הבא', 'ברוכה הבאה')} ל{theme.name}!</h2>
+                <p className="text-xl md:text-3xl mb-10 md:mb-14 text-white/95 leading-relaxed font-medium">
+                  <span className="font-black text-yellow-300 drop-shadow-md">{userName}</span>, {theme.avatarName(gender)} שלנו {theme.avatar},<br />{t('בוא נראה מה אתה יודע', 'בואי נראה מה את יודעת')}.
                 </p>
                 <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                   onClick={startNewExercise}
-                  className="w-full py-4 md:py-5 bg-gradient-to-r from-yellow-400 to-yellow-500 text-slate-900 rounded-full font-black text-xl md:text-3xl shadow-[0_10px_25px_-5px_rgba(253,224,71,0.5)] border-4 border-yellow-300/50"
+                  className="w-full py-5 md:py-6 bg-gradient-to-r from-yellow-400 to-yellow-500 text-slate-900 rounded-full font-black text-2xl md:text-4xl shadow-[0_10px_35px_-5px_rgba(253,224,71,0.6)] border-4 border-yellow-200"
                 >
                   {t('התחל אתגר!', 'התחילי אתגר!')}
                 </motion.button>
@@ -733,28 +755,26 @@ export default function App() {
 
           {/* --- TASK TRANSITION SCREEN --- */}
           {screen === 'taskTransition' && (
-            <motion.div key="taskTransition" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 p-6 md:p-8 text-white text-center relative bg-cover bg-center" style={{ backgroundImage: `url(${theme.bg})` }}>
-              <div className="absolute inset-0 bg-indigo-900/80 backdrop-blur-md" />
-
-              <button onClick={() => setScreen('map')} className="absolute top-4 right-4 md:top-6 md:right-6 z-20 flex items-center gap-2 bg-black/40 hover:bg-black/60 px-4 py-2 md:px-5 md:py-2.5 rounded-full transition-colors font-bold text-sm md:text-base border border-white/20 backdrop-blur-md">
-                <Home size={18} /> חזרה למפה
+            <motion.div key="taskTransition" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 p-8 text-white text-center relative">
+              <button onClick={() => setScreen('map')} className="absolute top-6 right-6 md:top-8 md:right-8 z-20 flex items-center gap-3 bg-black/50 hover:bg-black/70 px-5 py-3 md:px-6 md:py-3 rounded-full transition-colors font-bold text-sm md:text-lg border border-white/20 backdrop-blur-md">
+                <Home size={22} /> חזרה למפה
               </button>
 
-              <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative z-10 flex flex-col items-center max-w-sm md:max-w-none">
-                <CheckCircle2 className="w-24 h-24 md:w-32 md:h-32 text-emerald-400 mb-4 md:mb-6 drop-shadow-[0_0_20px_rgba(52,211,153,0.5)]" />
-                <h2 className="text-4xl md:text-6xl font-black mb-3 md:mb-4 tracking-wide">כל הכבוד!</h2>
-                <p className="text-xl md:text-3xl mb-8 md:mb-10 font-medium text-indigo-100">סיימת את המשימה הראשונה באתגר ה{theme.name}.<br />{t('מוכן', 'מוכנה')} למשימה השנייה?</p>
+              <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative z-10 flex flex-col items-center bg-black/40 p-10 md:p-16 rounded-[3rem] backdrop-blur-xl border border-white/20 w-full max-w-sm md:max-w-2xl">
+                <CheckCircle2 className="w-28 h-28 md:w-40 md:h-40 text-emerald-400 mb-6 drop-shadow-[0_0_30px_rgba(52,211,153,0.6)]" />
+                <h2 className="text-5xl md:text-7xl font-black mb-4 tracking-wide drop-shadow-lg">כל הכבוד!</h2>
+                <p className="text-2xl md:text-4xl mb-10 md:mb-12 font-medium text-white/90 leading-relaxed">סיימת את המשימה הראשונה באתגר ה{theme.name}.<br /><br />{t('מוכן', 'מוכנה')} למשימה השנייה?</p>
 
-                <div className="flex gap-2 md:gap-3 mb-8 md:mb-12">
-                  <div className="w-16 h-4 md:w-20 md:h-5 bg-emerald-400 rounded-full shadow-inner border-2 border-emerald-300"></div>
-                  <div className="w-16 h-4 md:w-20 md:h-5 bg-white/20 rounded-full border-2 border-white/30 backdrop-blur-sm"></div>
+                <div className="flex gap-4 mb-12">
+                  <div className="w-20 h-5 md:w-24 md:h-6 bg-emerald-400 rounded-full shadow-inner border-2 border-emerald-200"></div>
+                  <div className="w-20 h-5 md:w-24 md:h-6 bg-white/20 rounded-full border-2 border-white/30 backdrop-blur-sm"></div>
                 </div>
 
                 <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                   onClick={() => { setExerciseIdx(0); startNewExercise(); }}
-                  className="px-8 py-4 md:px-12 md:py-5 bg-white text-indigo-600 rounded-full font-black text-xl md:text-3xl shadow-[0_10px_25px_-5px_rgba(255,255,255,0.3)] flex items-center gap-3 border-4 border-white/50 w-full justify-center md:w-auto"
+                  className="px-10 py-5 md:px-14 md:py-6 bg-white text-indigo-700 rounded-full font-black text-2xl md:text-4xl shadow-[0_15px_35px_-5px_rgba(255,255,255,0.4)] flex items-center gap-4 w-full justify-center md:w-auto hover:bg-slate-50 transition-colors"
                 >
-                  למשימה השנייה <ArrowLeft strokeWidth={3} className="w-6 h-6 md:w-8 md:h-8" />
+                  למשימה השנייה <ArrowLeft strokeWidth={4} className="w-8 h-8" />
                 </motion.button>
               </motion.div>
             </motion.div>
@@ -762,49 +782,51 @@ export default function App() {
 
           {/* --- PLAYING SCREEN --- */}
           {screen === 'playing' && currentEx && (
-            <motion.div key="playing" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="relative flex-1 flex flex-col bg-slate-100">
-              <div className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" style={{ backgroundImage: `url(${theme.bg})` }}></div>
+            <motion.div key="playing" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="relative flex-1 flex flex-col">
 
-              <div className="relative z-20 p-2 md:p-4 flex justify-between items-center bg-white/90 backdrop-blur-xl border-b border-slate-200 shadow-sm">
-                <div className="flex items-center gap-2 md:gap-3">
-                  <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => setShowInstructions(true)} className="p-2 md:p-3 bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-indigo-600 rounded-xl md:rounded-2xl transition-colors" title="הוראות">
-                    <HelpCircle className="w-5 h-5 md:w-6 md:h-6" />
+              {/* Top Bar - Glassmorphism */}
+              <div className="relative z-20 p-3 md:p-5 flex justify-between items-center bg-white/70 backdrop-blur-xl border-b border-white/40 shadow-sm">
+                <div className="flex items-center gap-3 md:gap-5">
+                  <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => setShowInstructions(true)} className="p-3 bg-white/60 text-indigo-900 hover:bg-white rounded-xl md:rounded-2xl transition-colors border border-white/50 shadow-sm" title="הוראות">
+                    <HelpCircle className="w-6 h-6 md:w-8 md:h-8" />
                   </motion.button>
-                  <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => setScreen('map')} className="p-2 md:p-3 bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-indigo-600 rounded-xl md:rounded-2xl transition-colors flex items-center gap-2 font-bold" title="למפה">
-                    <Home className="w-5 h-5 md:w-6 md:h-6" />
+                  <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => setScreen('map')} className="p-3 bg-white/60 text-indigo-900 hover:bg-white rounded-xl md:rounded-2xl transition-colors border border-white/50 shadow-sm" title="למפה">
+                    <Home className="w-6 h-6 md:w-8 md:h-8" />
                   </motion.button>
-                  <div className="flex flex-col hidden sm:flex bg-indigo-50 px-3 md:px-4 py-1.5 md:py-2 rounded-xl md:rounded-2xl border border-indigo-100">
-                    <span className="text-[10px] md:text-[11px] font-bold text-indigo-400 uppercase tracking-wider">{theme.name} - משימה {taskIdx + 1}/2</span>
-                    <span className="text-sm md:text-base font-black text-indigo-900 truncate max-w-[120px] md:max-w-none">{userName} {theme.avatar}</span>
+                  <div className="flex flex-col bg-white/50 px-4 md:px-6 py-2 rounded-xl md:rounded-2xl border border-white/50 shadow-sm">
+                    <span className="text-[11px] md:text-sm font-bold text-indigo-600 uppercase tracking-wider">{theme.name} - משימה {taskIdx + 1}/2</span>
+                    <span className="text-sm md:text-xl font-black text-slate-900">{userName} {theme.avatar}</span>
                   </div>
                 </div>
-                <div className="flex gap-1 bg-slate-100 p-1.5 md:p-2.5 rounded-xl md:rounded-2xl border border-slate-200 shadow-inner overflow-x-auto max-w-[50%] md:max-w-none">
+                <div className="flex gap-1.5 md:gap-2 bg-white/50 p-2 md:p-3 rounded-xl md:rounded-2xl border border-white/50 shadow-sm overflow-x-auto max-w-[40%] md:max-w-none">
                   {Array(MAX_HEARTS).fill(0).map((_, i) => (
                     <motion.div key={i} animate={i < hearts ? { scale: [1, 1.1, 1] } : {}} transition={{ repeat: Infinity, duration: 2, delay: i * 0.2 }} className="shrink-0">
-                      <Heart className="w-4 h-4 md:w-6 md:h-6" fill={i < hearts ? "#f43f5e" : "#e2e8f0"} stroke={i < hearts ? "#f43f5e" : "#cbd5e1"} style={i < hearts ? { filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))' } : {}} />
+                      <Heart className="w-5 h-5 md:w-8 md:h-8" fill={i < hearts ? "#f43f5e" : "transparent"} stroke={i < hearts ? "#f43f5e" : "#94a3b8"} strokeWidth={i < hearts ? 2 : 1.5} style={i < hearts ? { filter: 'drop-shadow(0 2px 4px rgba(244,63,94,0.4))' } : {}} />
                     </motion.div>
                   ))}
                 </div>
               </div>
 
-              <div className="relative z-10 w-full h-2 md:h-3 bg-slate-200">
+              {/* Progress Bar */}
+              <div className="relative z-10 w-full h-3 md:h-4 bg-black/20 backdrop-blur-sm">
                 <motion.div
-                  className="h-full bg-gradient-to-l from-indigo-500 to-purple-500 shadow-[0_0_15px_rgba(99,102,241,0.5)] rounded-r-full"
+                  className="h-full bg-gradient-to-l from-yellow-400 to-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.8)] rounded-r-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${((exerciseIdx + (taskIdx * EXERCISES_PER_TASK)) / (EXERCISES_PER_TASK * TASKS_PER_CHALLENGE)) * 100}%` }}
                   transition={{ duration: 0.5, type: "spring" }}
                 />
               </div>
 
-              <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-2 md:p-4">
-                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="bg-white p-5 md:p-10 rounded-3xl md:rounded-[3rem] shadow-2xl border-[4px] md:border-[6px] border-slate-100 w-full max-w-xs md:max-w-md relative">
+              {/* Main Math Container */}
+              <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-4">
+                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="bg-white/85 backdrop-blur-2xl p-6 md:p-12 rounded-[2rem] md:rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/60 w-full max-w-sm md:max-w-3xl relative">
 
-                  <div className="flex justify-between items-center mb-6 md:mb-8 pb-4 md:pb-6 border-b-2 border-slate-100">
-                    <div className="text-xs md:text-sm font-black bg-indigo-50 text-indigo-600 px-3 py-1.5 md:px-5 md:py-2.5 rounded-xl md:rounded-2xl border border-indigo-100 tracking-wide">
+                  <div className="flex justify-between items-center mb-8 md:mb-12 pb-4 md:pb-6 border-b-2 border-slate-200/50">
+                    <div className="text-sm md:text-xl font-black bg-indigo-100 text-indigo-700 px-4 py-2 md:px-6 md:py-3 rounded-xl md:rounded-2xl border border-indigo-200 tracking-wide">
                       תרגיל {exerciseIdx + 1}/8
                     </div>
-                    <motion.div animate={timeLeft < 10 ? { scale: [1, 1.1, 1], color: ['#ef4444', '#b91c1c', '#ef4444'] } : {}} transition={{ repeat: Infinity, duration: 0.5 }} className={`flex items-center gap-1.5 md:gap-2 px-3 py-1.5 md:px-5 md:py-2.5 rounded-xl md:rounded-2xl border-2 font-mono font-black text-xl md:text-2xl shadow-sm ${timeLeft < 10 ? 'bg-red-50 border-red-200 text-red-600' : 'bg-slate-50 border-slate-200 text-slate-700'}`}>
-                      <Timer className="w-5 h-5 md:w-6 md:h-6" /> {timeLeft}
+                    <motion.div animate={timeLeft < 10 ? { scale: [1, 1.1, 1], color: ['#ef4444', '#b91c1c', '#ef4444'] } : {}} transition={{ repeat: Infinity, duration: 0.5 }} className={`flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-xl md:rounded-2xl border-2 font-mono font-black text-2xl md:text-4xl shadow-sm ${timeLeft < 10 ? 'bg-red-100 border-red-300 text-red-600' : 'bg-slate-100 border-slate-200 text-slate-700'}`}>
+                      <Timer className="w-6 h-6 md:w-8 md:h-8" /> {timeLeft}
                     </motion.div>
                   </div>
 
@@ -818,8 +840,8 @@ export default function App() {
                   <motion.button whileHover={{ scale: (!resOnes && !resTens) || isChecking ? 1 : 1.05 }} whileTap={{ scale: (!resOnes && !resTens) || isChecking ? 1 : 0.95 }}
                     onClick={checkAnswer}
                     disabled={(!resOnes && !resTens) || isChecking}
-                    className={`mt-6 md:mt-10 w-full py-4 md:py-5 text-white rounded-2xl font-black text-xl md:text-2xl transition-all shadow-lg flex items-center justify-center gap-2 md:gap-3 border-b-4 
-                    ${isSuccessAction ? 'bg-emerald-500 border-emerald-700 shadow-[0_0_20px_rgba(16,185,129,0.5)]' : 'bg-indigo-500 border-indigo-700 hover:bg-indigo-400 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-400 disabled:border-slate-500'}`}
+                    className={`mt-10 md:mt-14 w-full py-5 md:py-6 text-white rounded-2xl md:rounded-3xl font-black text-2xl md:text-4xl transition-all shadow-xl flex items-center justify-center gap-3 border-b-4 md:border-b-8 
+                    ${isSuccessAction ? 'bg-emerald-500 border-emerald-700 shadow-[0_0_30px_rgba(16,185,129,0.6)]' : 'bg-indigo-600 border-indigo-800 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-400 disabled:border-slate-500'}`}
                   >
                     {isSuccessAction ? 'כל הכבוד! ✨' : t('בדיקה', 'בדיקה')}
                   </motion.button>
@@ -834,13 +856,13 @@ export default function App() {
                     className="absolute z-50 cursor-pointer"
                     style={{ top: bonusPos.top, left: bonusPos.left }}
                   >
-                    <motion.div animate={{ y: [-10, 10, -10] }} transition={{ repeat: Infinity, duration: 1.5 }} className="bg-white/95 p-3 md:p-5 rounded-full shadow-[0_0_40px_rgba(244,63,94,0.8)] backdrop-blur-md border-4 border-rose-200">
-                      <Heart fill="#f43f5e" stroke="#f43f5e" className="w-10 h-10 md:w-16 md:h-16 animate-pulse drop-shadow-xl" />
+                    <motion.div animate={{ y: [-10, 10, -10] }} transition={{ repeat: Infinity, duration: 1.5 }} className="bg-white/95 p-4 md:p-6 rounded-full shadow-[0_0_50px_rgba(244,63,94,0.8)] backdrop-blur-md border-4 border-rose-200">
+                      <Heart fill="#f43f5e" stroke="#f43f5e" className="w-12 h-12 md:w-20 md:h-20 animate-pulse drop-shadow-xl" />
                     </motion.div>
                   </motion.div>
                 )}
                 {bonusMessageVisible && (
-                  <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -50, opacity: 0 }} className="absolute top-[15%] left-1/2 -translate-x-1/2 z-40 bg-yellow-400 text-slate-900 font-black px-4 py-2 md:px-8 md:py-4 rounded-full shadow-2xl border-4 border-white text-sm md:text-xl text-center whitespace-nowrap">
+                  <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -50, opacity: 0 }} className="absolute top-[15%] left-1/2 -translate-x-1/2 z-40 bg-yellow-400 text-slate-900 font-black px-6 py-3 md:px-10 md:py-5 rounded-full shadow-2xl border-4 border-white text-base md:text-2xl text-center whitespace-nowrap">
                     {t('פתרת נכון 4 תרגילים ברצף! תפוס את הלב!', 'פתרת נכון 4 תרגילים ברצף! תפסי את הלב!')}
                   </motion.div>
                 )}
@@ -850,14 +872,14 @@ export default function App() {
               <AnimatePresence>
                 {showSpecialAnim && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-md">
-                    <motion.div initial={{ scale: 0.5, rotate: -10 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", bounce: 0.5 }} className="flex items-center gap-3 md:gap-6 bg-white p-6 md:p-12 rounded-full shadow-[0_0_80px_rgba(255,255,255,0.8)] border-[8px] md:border-[12px] border-yellow-400">
-                      <span className="font-black text-6xl md:text-9xl text-indigo-600 drop-shadow-lg">7</span>
-                      <div className="flex gap-1 md:gap-2 relative top-2 md:top-4">
-                        <span className="anim-hand-left text-[60px] md:text-[100px]">🫱</span>
-                        <span className="text-[60px] md:text-[100px] -mt-3 md:-mt-6">🤩</span>
-                        <span className="anim-hand-right text-[60px] md:text-[100px]">🫲</span>
+                    <motion.div initial={{ scale: 0.5, rotate: -10 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", bounce: 0.5 }} className="flex items-center gap-4 md:gap-8 bg-white p-8 md:p-16 rounded-[4rem] shadow-[0_0_100px_rgba(255,255,255,0.8)] border-[10px] md:border-[16px] border-yellow-400">
+                      <span className="font-black text-7xl md:text-[12rem] text-indigo-600 drop-shadow-lg leading-none">7</span>
+                      <div className="flex gap-2 relative top-2 md:top-6">
+                        <span className="anim-hand-left text-[70px] md:text-[130px] leading-none">🫱</span>
+                        <span className="text-[70px] md:text-[130px] leading-none -mt-4 md:-mt-8">🤩</span>
+                        <span className="anim-hand-right text-[70px] md:text-[130px] leading-none">🫲</span>
                       </div>
-                      <span className="font-black text-6xl md:text-9xl text-pink-500 drop-shadow-lg">6</span>
+                      <span className="font-black text-7xl md:text-[12rem] text-pink-500 drop-shadow-lg leading-none">6</span>
                     </motion.div>
                   </motion.div>
                 )}
@@ -867,16 +889,16 @@ export default function App() {
               <AnimatePresence>
                 {showInstructions && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4 md:p-6 backdrop-blur-md">
-                    <motion.div initial={{ y: 50, scale: 0.9 }} animate={{ y: 0, scale: 1 }} exit={{ y: 20, scale: 0.9 }} className="bg-white p-6 md:p-10 rounded-3xl md:rounded-[3rem] max-w-sm md:max-w-xl w-full relative shadow-2xl border-4 border-indigo-100 max-h-[90vh] overflow-y-auto">
-                      <button onClick={() => setShowInstructions(false)} className="absolute top-4 right-4 md:top-6 md:right-6 text-slate-400 hover:text-slate-800 bg-slate-100 p-1.5 md:p-2 rounded-full"><X className="w-5 h-5 md:w-7 md:h-7" /></button>
-                      <h2 className="text-2xl md:text-4xl font-black mb-6 md:mb-8 text-indigo-600 border-b-4 border-indigo-50 pb-3 md:pb-4">איך משחקים?</h2>
-                      <ul className="space-y-4 md:space-y-6 text-base md:text-xl text-slate-700 font-medium">
-                        <li className="flex items-start gap-3 md:gap-4 bg-slate-50 p-3 md:p-4 rounded-xl md:rounded-2xl"><Timer className="text-indigo-500 shrink-0 mt-0.5 md:mt-1 w-6 h-6 md:w-8 md:h-8" /> <div><b className="text-slate-900">הזמן רץ!</b> פתרו את התרגילים לפני שהשעון יתאפס.</div></li>
-                        <li className="flex items-start gap-3 md:gap-4 bg-rose-50 p-3 md:p-4 rounded-xl md:rounded-2xl"><Heart className="text-rose-500 shrink-0 mt-0.5 md:mt-1 w-6 h-6 md:w-8 md:h-8" fill="#f43f5e" /> <div><b className="text-slate-900">לבבות:</b> טעות או חריגה מהזמן מורידות לב. נגמרו הלבבות? מתחילים מהתחלה.</div></li>
-                        <li className="flex items-start gap-3 md:gap-4 bg-blue-50 p-3 md:p-4 rounded-xl md:rounded-2xl"><span className="text-2xl md:text-3xl shrink-0 leading-none">✍️</span> <div><b className="text-slate-900">המרות:</b> השתמשו בריבועים העליונים כדי לכתוב המרות. הספרה שהוחלפה תימחק בקו!</div></li>
-                        <li className="flex items-start gap-3 md:gap-4 bg-yellow-50 p-3 md:p-4 rounded-xl md:rounded-2xl"><span className="text-2xl md:text-3xl shrink-0 leading-none">🎁</span> <div><b className="text-slate-900">בונוס:</b> 4 תשובות נכונות ברצף יעניקו לכם לב מתנה שיופיע על המסך.</div></li>
+                    <motion.div initial={{ y: 50, scale: 0.9 }} animate={{ y: 0, scale: 1 }} exit={{ y: 20, scale: 0.9 }} className="bg-white/95 backdrop-blur-xl p-8 md:p-12 rounded-3xl md:rounded-[3rem] max-w-sm md:max-w-2xl w-full relative shadow-2xl border border-white/50 max-h-[90vh] overflow-y-auto">
+                      <button onClick={() => setShowInstructions(false)} className="absolute top-6 right-6 md:top-8 md:right-8 text-slate-500 hover:text-slate-900 bg-slate-100 p-2 md:p-3 rounded-full"><X className="w-6 h-6 md:w-8 md:h-8" /></button>
+                      <h2 className="text-3xl md:text-5xl font-black mb-8 md:mb-10 text-indigo-700 border-b-4 border-indigo-100 pb-4">איך משחקים?</h2>
+                      <ul className="space-y-6 md:space-y-8 text-lg md:text-2xl text-slate-800 font-medium">
+                        <li className="flex items-start gap-4 md:gap-5 bg-slate-100/50 p-4 md:p-5 rounded-2xl"><Timer className="text-indigo-600 shrink-0 mt-1 w-8 h-8 md:w-10 md:h-10" /> <div><b className="text-slate-900">הזמן רץ!</b> פתרו את התרגילים לפני שהשעון יתאפס.</div></li>
+                        <li className="flex items-start gap-4 md:gap-5 bg-rose-50 p-4 md:p-5 rounded-2xl"><Heart className="text-rose-500 shrink-0 mt-1 w-8 h-8 md:w-10 md:h-10" fill="#f43f5e" /> <div><b className="text-slate-900">לבבות:</b> טעות או חריגה מהזמן מורידות לב. נגמרו הלבבות? מתחילים מהתחלה.</div></li>
+                        <li className="flex items-start gap-4 md:gap-5 bg-blue-50 p-4 md:p-5 rounded-2xl"><span className="text-3xl md:text-4xl shrink-0 leading-none">✍️</span> <div><b className="text-slate-900">המרות:</b> השתמשו בריבועים העליונים כדי לכתוב המרות. הספרה שהוחלפה תימחק בקו!</div></li>
+                        <li className="flex items-start gap-4 md:gap-5 bg-yellow-50 p-4 md:p-5 rounded-2xl"><span className="text-3xl md:text-4xl shrink-0 leading-none">🎁</span> <div><b className="text-slate-900">בונוס:</b> 4 תשובות נכונות ברצף יעניקו לכם לב מתנה שיופיע על המסך.</div></li>
                       </ul>
-                      <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setShowInstructions(false)} className="mt-6 md:mt-10 w-full py-4 md:py-5 bg-indigo-600 text-white rounded-xl md:rounded-2xl font-black text-xl md:text-2xl shadow-lg">הבנתי, בואו נמשיך!</motion.button>
+                      <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setShowInstructions(false)} className="mt-10 md:mt-12 w-full py-5 md:py-6 bg-indigo-600 text-white rounded-2xl md:rounded-3xl font-black text-2xl md:text-3xl shadow-xl">הבנתי, בואו נמשיך!</motion.button>
                     </motion.div>
                   </motion.div>
                 )}
@@ -886,41 +908,41 @@ export default function App() {
 
           {/* --- FEEDBACK SCREEN --- */}
           {screen === 'feedback' && (
-            <motion.div key="feedback" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="relative flex-1 flex flex-col items-center justify-center p-4 md:p-8 bg-cover bg-center overflow-y-auto" style={{ backgroundImage: `url(${theme.bg})` }}>
-              <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-lg" />
+            <motion.div key="feedback" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="relative flex-1 flex flex-col items-center justify-center p-4 md:p-8 overflow-y-auto">
+              <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-md" />
 
-              <button onClick={() => setScreen('map')} className="absolute top-4 right-4 md:top-6 md:right-6 z-20 flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 md:px-5 md:py-2.5 rounded-full transition-colors font-bold text-sm md:text-base border border-white/20 backdrop-blur-md">
-                <Home size={18} /> חזרה למפה
+              <button onClick={() => setScreen('map')} className="absolute top-6 right-6 md:top-8 md:right-8 z-20 flex items-center gap-3 bg-white/10 hover:bg-white/20 text-white px-5 py-3 md:px-6 md:py-3 rounded-full transition-colors font-bold text-sm md:text-lg border border-white/20 backdrop-blur-md">
+                <Home size={22} /> חזרה למפה
               </button>
 
-              <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="relative z-10 p-6 md:p-10 rounded-3xl md:rounded-[3rem] shadow-2xl w-full max-w-sm md:max-w-lg flex flex-col items-center bg-white border-t-[8px] md:border-t-[12px] border-rose-500 my-auto">
+              <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="relative z-10 p-8 md:p-12 rounded-3xl md:rounded-[3rem] shadow-2xl w-full max-w-sm md:max-w-2xl flex flex-col items-center bg-white/95 backdrop-blur-xl border-t-[8px] md:border-t-[16px] border-rose-500 my-auto">
 
                 {feedbackType === 'timeout' && (
-                  <div className="text-center mb-6 md:mb-8">
+                  <div className="text-center mb-8 md:mb-10">
                     <motion.div animate={{ rotate: [-10, 10, -10] }} transition={{ repeat: Infinity, duration: 1 }}>
-                      <Timer className="text-rose-500 mx-auto mb-3 md:mb-4 drop-shadow-md w-16 h-16 md:w-20 md:h-20" />
+                      <Timer className="text-rose-500 mx-auto mb-4 md:mb-6 drop-shadow-md w-20 h-20 md:w-28 md:h-28" />
                     </motion.div>
-                    <h2 className="text-3xl md:text-4xl font-black text-rose-600">אוי, הזמן נגמר!</h2>
-                    <p className="text-slate-600 mt-2 md:mt-3 text-lg md:text-xl font-medium">אל דאגה, בואו נראה איך פותרים את זה:</p>
+                    <h2 className="text-4xl md:text-5xl font-black text-rose-600">אוי, הזמן נגמר!</h2>
+                    <p className="text-slate-600 mt-4 text-xl md:text-2xl font-medium">אל דאגה, בואו נראה איך פותרים את זה:</p>
                   </div>
                 )}
 
                 {feedbackType === 'error' && (
-                  <div className="text-center mb-6 md:mb-8">
+                  <div className="text-center mb-8 md:mb-10">
                     <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 2 }}>
-                      <XCircle className="text-rose-500 mx-auto mb-3 md:mb-4 drop-shadow-md w-16 h-16 md:w-20 md:h-20" />
+                      <XCircle className="text-rose-500 mx-auto mb-4 md:mb-6 drop-shadow-md w-20 h-20 md:w-28 md:h-28" />
                     </motion.div>
-                    <h2 className="text-3xl md:text-4xl font-black text-rose-600">{t('לא נורא, תטעה ותלמד!', 'לא נורא, תטעי ותלמדי!')}</h2>
+                    <h2 className="text-4xl md:text-5xl font-black text-rose-600">{t('לא נורא, תטעה ותלמד!', 'לא נורא, תטעי ותלמדי!')}</h2>
                     {confusedOperation && (
-                      <div className="bg-orange-100 text-orange-800 p-3 md:p-4 rounded-xl md:rounded-2xl mt-4 md:mt-5 font-black border-2 border-orange-200 shadow-sm text-sm md:text-lg">
+                      <div className="bg-orange-100 text-orange-800 p-4 md:p-6 rounded-2xl md:rounded-3xl mt-6 md:mt-8 font-black border-2 border-orange-200 shadow-sm text-lg md:text-2xl">
                         נראה שהתבלבלת בין חיבור לחיסור! שימו לב לסימן.
                       </div>
                     )}
-                    <p className="text-slate-600 mt-3 md:mt-5 text-lg md:text-xl font-medium">הנה הפתרון הנכון במאונך:</p>
+                    <p className="text-slate-600 mt-5 md:mt-6 text-xl md:text-2xl font-medium">הנה הפתרון הנכון במאונך:</p>
                   </div>
                 )}
 
-                <div className="p-4 md:p-6 bg-slate-50 rounded-2xl md:rounded-[2rem] mb-6 md:mb-8 w-full border-4 border-slate-100 shadow-inner flex justify-center transform scale-90 sm:scale-100 md:scale-110 origin-top">
+                <div className="p-6 md:p-8 bg-slate-50/80 rounded-3xl md:rounded-[2.5rem] mb-8 md:mb-10 w-full border-4 border-slate-200 shadow-inner flex justify-center transform scale-90 sm:scale-100 md:scale-110 origin-top">
                   <VerticalProblem
                     num1={currentEx.num1} num2={currentEx.num2} type={currentEx.type}
                     isStatic
@@ -929,21 +951,21 @@ export default function App() {
                   />
                 </div>
 
-                <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8 bg-rose-50 px-4 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl border-2 border-rose-100 w-full justify-center shadow-sm">
+                <div className="flex items-center gap-4 md:gap-5 mb-8 md:mb-10 bg-rose-50 px-6 py-4 md:px-10 md:py-6 rounded-2xl md:rounded-3xl border-2 border-rose-200 w-full justify-center shadow-sm">
                   <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-                    <Heart fill="#f43f5e" stroke="#f43f5e" className="w-6 h-6 md:w-8 md:h-8 drop-shadow-sm" />
+                    <Heart fill="#f43f5e" stroke="#f43f5e" className="w-8 h-8 md:w-10 md:h-10 drop-shadow-sm" />
                   </motion.div>
-                  <span className="text-xl md:text-2xl font-black text-rose-600">נשארו לך {hearts} לבבות</span>
+                  <span className="text-2xl md:text-3xl font-black text-rose-600">נשארו לך {hearts} לבבות</span>
                 </div>
 
                 <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                   onClick={advanceProgress}
-                  className="relative overflow-hidden w-full py-4 md:py-5 bg-indigo-600 text-white rounded-xl md:rounded-2xl font-black text-xl md:text-2xl shadow-lg flex items-center justify-center gap-2 md:gap-3 group border-b-4 border-indigo-800"
+                  className="relative overflow-hidden w-full py-5 md:py-6 bg-indigo-600 text-white rounded-2xl md:rounded-3xl font-black text-2xl md:text-3xl shadow-xl flex items-center justify-center gap-3 md:gap-4 group border-b-4 border-indigo-800"
                 >
                   <div className="absolute left-0 top-0 h-full bg-white/20 transition-all duration-1000 ease-linear" style={{ width: `${(feedbackCountdown / 30) * 100}%` }}></div>
-                  <span className="relative z-10 flex items-center gap-2 md:gap-3">
-                    {t('ממשיכים לתרגיל הבא', 'ממשיכות לתרגיל הבא')} <ArrowLeft strokeWidth={3} className="w-5 h-5 md:w-6 md:h-6" />
-                    <span className="bg-black/20 px-3 py-1 md:px-4 md:py-1.5 rounded-lg md:rounded-xl text-sm md:text-lg shadow-inner border border-white/10">{feedbackCountdown}</span>
+                  <span className="relative z-10 flex items-center gap-3 md:gap-4">
+                    {t('ממשיכים לתרגיל הבא', 'ממשיכות לתרגיל הבא')} <ArrowLeft strokeWidth={3} className="w-6 h-6 md:w-8 md:h-8" />
+                    <span className="bg-black/20 px-4 py-1.5 md:px-5 md:py-2 rounded-xl md:rounded-2xl text-lg md:text-xl shadow-inner border border-white/10">{feedbackCountdown}</span>
                   </span>
                 </motion.button>
               </motion.div>
@@ -952,24 +974,24 @@ export default function App() {
 
           {/* --- CHALLENGE COMPLETE SCREEN --- */}
           {screen === 'challengeComplete' && (
-            <motion.div key="challengeComplete" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 p-6 md:p-8 bg-gradient-to-br from-indigo-600 via-purple-600 to-fuchsia-600 text-white text-center relative overflow-hidden">
+            <motion.div key="challengeComplete" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 p-6 md:p-8 text-white text-center relative">
 
-              <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="relative z-10 bg-white/10 p-8 md:p-12 rounded-3xl md:rounded-[3rem] backdrop-blur-xl border border-white/20 shadow-2xl max-w-sm md:max-w-lg w-full">
-                <h2 className="text-5xl md:text-6xl font-black mb-4 md:mb-6 text-yellow-300 drop-shadow-lg">אתגר הושלם!</h2>
-                <p className="text-xl md:text-3xl mb-6 md:mb-8 font-medium text-indigo-100">כל הכבוד <span className="font-black text-white">{userName}</span>, סיימת את אתגר ה{theme.name}!</p>
+              <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="relative z-10 bg-black/40 p-10 md:p-16 rounded-3xl md:rounded-[4rem] backdrop-blur-xl border border-white/30 shadow-2xl max-w-sm md:max-w-2xl w-full">
+                <h2 className="text-6xl md:text-8xl font-black mb-6 md:mb-8 text-yellow-300 drop-shadow-lg">אתגר הושלם!</h2>
+                <p className="text-2xl md:text-4xl mb-8 md:mb-10 font-medium text-indigo-50">כל הכבוד <span className="font-black text-white">{userName}</span>, סיימת את אתגר ה{theme.name}!</p>
 
-                <div className="bg-white/20 rounded-3xl md:rounded-[2rem] p-6 md:p-8 mb-8 md:mb-10 inline-block shadow-inner border border-white/20 backdrop-blur-sm">
-                  <p className="text-lg md:text-xl font-bold mb-3 md:mb-4 opacity-90">הפרס החדש שלך:</p>
-                  <motion.div animate={{ y: [-10, 10, -10], scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 3 }} className="text-7xl md:text-9xl drop-shadow-2xl">
+                <div className="bg-white/10 rounded-3xl md:rounded-[3rem] p-8 md:p-12 mb-10 md:mb-12 inline-block shadow-inner border border-white/20 backdrop-blur-md">
+                  <p className="text-xl md:text-2xl font-bold mb-4 md:mb-6 opacity-90">הפרס החדש שלך:</p>
+                  <motion.div animate={{ y: [-10, 10, -10], scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 3 }} className="text-8xl md:text-[10rem] drop-shadow-2xl leading-none">
                     {theme.prize}
                   </motion.div>
                 </div>
 
                 <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                   onClick={handleChallengeCompleteToMap}
-                  className="px-8 py-4 md:px-10 md:py-5 bg-emerald-500 rounded-full font-black text-xl md:text-2xl shadow-[0_10px_25px_-5px_rgba(16,185,129,0.5)] flex items-center gap-2 md:gap-3 border-4 border-emerald-400 w-full justify-center"
+                  className="px-10 py-5 md:px-14 md:py-6 bg-emerald-500 rounded-full font-black text-2xl md:text-3xl shadow-[0_15px_35px_-5px_rgba(16,185,129,0.5)] flex items-center gap-3 md:gap-4 border-4 border-emerald-300 w-full justify-center"
                 >
-                  <Map className="w-6 h-6 md:w-7 md:h-7" /> חזרה למפה
+                  <Map className="w-8 h-8 md:w-10 md:h-10" /> חזרה למפה
                 </motion.button>
               </motion.div>
             </motion.div>
@@ -977,42 +999,43 @@ export default function App() {
 
           {/* --- SHARE CERTIFICATE SCREEN --- */}
           {screen === 'shareCertificate' && (
-            <motion.div key="certificate" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col flex-1 bg-slate-100 items-center justify-center p-4 md:p-6 relative overflow-y-auto bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-100 via-slate-100 to-slate-200">
+            <motion.div key="certificate" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col flex-1 items-center justify-center p-4 md:p-8 relative overflow-y-auto">
+              <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md"></div>
 
-              <motion.div initial={{ y: -20 }} animate={{ y: 0 }} id="certificate-render" className="bg-white p-6 md:p-12 rounded-3xl md:rounded-[3rem] shadow-2xl border-[8px] md:border-[12px] border-yellow-400 max-w-sm md:max-w-2xl w-full text-center relative mb-6 md:mb-8">
-                <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none rounded-[2rem]" style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/cubes.png')` }}></div>
-                <Star className="absolute top-4 right-4 md:top-8 md:right-8 text-yellow-400 drop-shadow-md w-10 h-10 md:w-16 md:h-16" fill="yellow" />
-                <Star className="absolute top-4 left-4 md:top-8 md:left-8 text-yellow-400 drop-shadow-md w-10 h-10 md:w-16 md:h-16" fill="yellow" />
+              <motion.div initial={{ y: -20 }} animate={{ y: 0 }} id="certificate-render" className="bg-white p-8 md:p-16 rounded-3xl md:rounded-[4rem] shadow-2xl border-[8px] md:border-[16px] border-yellow-400 max-w-sm md:max-w-3xl w-full text-center relative mb-8 md:mb-12">
+                <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none rounded-[3rem]" style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/cubes.png')` }}></div>
+                <Star className="absolute top-6 right-6 md:top-10 md:right-10 text-yellow-400 drop-shadow-md w-12 h-12 md:w-20 md:h-20" fill="yellow" />
+                <Star className="absolute top-6 left-6 md:top-10 md:left-10 text-yellow-400 drop-shadow-md w-12 h-12 md:w-20 md:h-20" fill="yellow" />
 
                 <div className="relative z-10 mt-4 md:mt-0">
-                  <Trophy className="mx-auto mb-4 md:mb-6 text-yellow-500 drop-shadow-lg w-16 h-16 md:w-24 md:h-24" />
-                  <h2 className="text-4xl md:text-6xl font-black text-indigo-800 mb-2 md:mb-4 tracking-tight">תעודת הצטיינות</h2>
-                  <p className="text-xl md:text-3xl text-slate-500 mb-6 md:mb-8 font-medium">ל{gender === 'male' ? 'שחקן' : 'שחקנית'} ה{t('אלוף', 'אלופה')}:</p>
-                  <div className="inline-block relative mb-8 md:mb-10">
-                    <h3 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 px-6 md:px-10 pb-2 md:pb-4 relative z-10 leading-tight">{userName}</h3>
-                    <div className="absolute bottom-0 left-0 w-full h-3 md:h-4 bg-yellow-300 rounded-full opacity-50 transform -skew-x-12"></div>
+                  <Trophy className="mx-auto mb-6 md:mb-8 text-yellow-500 drop-shadow-lg w-20 h-20 md:w-32 md:h-32" />
+                  <h2 className="text-5xl md:text-7xl font-black text-indigo-800 mb-4 md:mb-6 tracking-tight">תעודת הצטיינות</h2>
+                  <p className="text-2xl md:text-4xl text-slate-500 mb-8 md:mb-10 font-medium">ל{gender === 'male' ? 'שחקן' : 'שחקנית'} ה{t('אלוף', 'אלופה')}:</p>
+                  <div className="inline-block relative mb-10 md:mb-14">
+                    <h3 className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 px-8 md:px-12 pb-4 md:pb-6 relative z-10 leading-tight">{userName}</h3>
+                    <div className="absolute bottom-0 left-0 w-full h-4 md:h-6 bg-yellow-300 rounded-full opacity-50 transform -skew-x-12"></div>
                   </div>
 
-                  <p className="font-black text-slate-700 text-lg md:text-2xl mb-4 md:mb-6">אלו הפרסים שזכיתי בהם במשחק של ב׳2:</p>
-                  <div className="flex flex-wrap justify-center gap-3 md:gap-5 bg-slate-50 p-4 md:p-8 rounded-2xl md:rounded-3xl min-h-[100px] md:min-h-[140px] border-4 border-slate-100 shadow-inner">
+                  <p className="font-black text-slate-700 text-xl md:text-3xl mb-6 md:mb-8">אלו הפרסים שזכיתי בהם במשחק של ב׳2:</p>
+                  <div className="flex flex-wrap justify-center gap-4 md:gap-6 bg-slate-50 p-6 md:p-10 rounded-3xl md:rounded-[2.5rem] min-h-[120px] md:min-h-[180px] border-4 border-slate-100 shadow-inner">
                     {earnedPrizes.length > 0
-                      ? earnedPrizes.map((p, i) => <span key={i} className="text-4xl md:text-6xl bg-white p-3 md:p-4 rounded-xl md:rounded-2xl shadow-md border border-slate-100">{p}</span>)
-                      : <span className="text-slate-400 text-base md:text-xl font-bold flex items-center h-full text-center">עוד אין פרסים, המשיכו לשחק!</span>
+                      ? earnedPrizes.map((p, i) => <span key={i} className="text-5xl md:text-7xl bg-white p-4 md:p-6 rounded-2xl md:rounded-3xl shadow-md border border-slate-100">{p}</span>)
+                      : <span className="text-slate-400 text-lg md:text-2xl font-bold flex items-center h-full text-center">עוד אין פרסים, המשיכו לשחק!</span>
                     }
                   </div>
                 </div>
               </motion.div>
 
-              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 w-full max-w-sm md:max-w-2xl">
+              <div className="flex flex-col sm:flex-row gap-4 md:gap-6 w-full max-w-sm md:max-w-3xl relative z-10">
                 <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                   onClick={downloadAndShareCertificate}
-                  className="flex-1 py-4 md:py-5 bg-indigo-600 text-white rounded-xl md:rounded-2xl font-black text-lg md:text-2xl shadow-[0_10px_20px_-5px_rgba(79,70,229,0.5)] flex items-center justify-center gap-2 md:gap-3 border-b-4 border-indigo-800"
+                  className="flex-1 py-5 md:py-6 bg-indigo-600 text-white rounded-2xl md:rounded-3xl font-black text-xl md:text-3xl shadow-[0_15px_30px_-5px_rgba(79,70,229,0.5)] flex items-center justify-center gap-3 md:gap-4 border-b-4 md:border-b-[6px] border-indigo-800"
                 >
-                  <Download className="w-6 h-6 md:w-7 md:h-7" /> {t('שתף', 'שתפי')} הישגים
+                  <Download className="w-8 h-8 md:w-10 md:h-10" /> {t('שתף', 'שתפי')} הישגים
                 </motion.button>
                 <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                   onClick={() => setScreen('welcome')}
-                  className="py-4 md:py-5 px-6 md:px-8 bg-white text-slate-700 rounded-xl md:rounded-2xl font-black text-lg md:text-xl shadow-md border-b-4 border-slate-200"
+                  className="py-5 md:py-6 px-8 md:px-12 bg-white text-slate-700 rounded-2xl md:rounded-3xl font-black text-xl md:text-3xl shadow-xl border-b-4 md:border-b-[6px] border-slate-200"
                 >
                   למסך הראשי
                 </motion.button>
@@ -1022,19 +1045,20 @@ export default function App() {
 
           {/* --- GAME OVER SCREEN --- */}
           {screen === 'gameOver' && (
-            <motion.div key="gameOver" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 p-6 md:p-8 bg-rose-600 text-white text-center relative overflow-hidden">
+            <motion.div key="gameOver" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 p-6 md:p-8 text-white text-center relative">
+              <div className="absolute inset-0 bg-rose-600/90 backdrop-blur-md"></div>
               <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 20, ease: "linear" }} className="absolute -right-10 -top-10 md:-right-20 md:-top-20 opacity-20">
-                <RefreshCcw className="w-64 h-64 md:w-[300px] md:h-[300px]" />
+                <RefreshCcw className="w-64 h-64 md:w-[400px] md:h-[400px]" />
               </motion.div>
 
-              <div className="relative z-10 bg-white/10 p-8 md:p-12 rounded-3xl md:rounded-[3rem] backdrop-blur-md border border-white/20 shadow-2xl max-w-sm md:max-w-lg">
-                <h2 className="text-4xl md:text-6xl font-black mb-4 md:mb-6 drop-shadow-md">אופס, נגמרו הלבבות!</h2>
-                <p className="text-xl md:text-3xl mb-8 md:mb-12 opacity-90 font-medium">{userName}, לא קרה כלום.<br />כל {t('גיבור', 'גיבורה')} צריכים להתאמן קצת יותר לפעמים!</p>
+              <div className="relative z-10 bg-black/30 p-10 md:p-16 rounded-3xl md:rounded-[4rem] backdrop-blur-xl border border-white/20 shadow-2xl max-w-sm md:max-w-2xl">
+                <h2 className="text-5xl md:text-7xl font-black mb-6 md:mb-8 drop-shadow-md">אופס, נגמרו הלבבות!</h2>
+                <p className="text-2xl md:text-4xl mb-10 md:mb-14 opacity-95 font-medium">{userName}, לא קרה כלום.<br /><br />כל {t('גיבור', 'גיבורה')} צריכים להתאמן קצת יותר לפעמים!</p>
                 <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                   onClick={resetGame}
-                  className="px-6 py-4 md:px-10 md:py-5 bg-white text-rose-600 rounded-full font-black text-xl md:text-3xl shadow-xl flex items-center justify-center gap-3 md:gap-4 mx-auto w-full"
+                  className="px-8 py-5 md:px-12 md:py-6 bg-white text-rose-600 rounded-full font-black text-2xl md:text-4xl shadow-2xl flex items-center justify-center gap-4 md:gap-5 mx-auto w-full"
                 >
-                  <RefreshCcw strokeWidth={3} className="w-6 h-6 md:w-8 md:h-8" /> מתחילים מההתחלה
+                  <RefreshCcw strokeWidth={3} className="w-8 h-8 md:w-10 md:h-10" /> מתחילים מההתחלה
                 </motion.button>
               </div>
             </motion.div>
@@ -1042,25 +1066,26 @@ export default function App() {
 
           {/* --- VICTORY SCREEN --- */}
           {screen === 'victory' && (
-            <motion.div key="victory" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 p-6 md:p-8 bg-gradient-to-br from-emerald-400 via-teal-500 to-indigo-600 text-white text-center relative overflow-hidden">
+            <motion.div key="victory" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 p-6 md:p-8 text-white text-center relative">
+              <div className="absolute inset-0 bg-indigo-900/60 backdrop-blur-sm"></div>
 
-              <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.3 }} className="relative z-10 bg-black/20 p-8 md:p-14 rounded-3xl md:rounded-[3rem] backdrop-blur-xl border border-white/20 shadow-2xl max-w-sm md:max-w-2xl">
+              <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.3 }} className="relative z-10 bg-black/40 p-10 md:p-16 rounded-3xl md:rounded-[4rem] backdrop-blur-2xl border border-white/30 shadow-2xl max-w-sm md:max-w-3xl w-full">
                 <motion.div animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 2 }}>
-                  <Star fill="yellow" className="text-yellow-400 mb-6 md:mb-8 drop-shadow-[0_0_40px_rgba(253,224,71,0.8)] mx-auto w-24 h-24 md:w-[140px] md:h-[140px]" />
+                  <Star fill="yellow" className="text-yellow-400 mb-8 md:mb-10 drop-shadow-[0_0_50px_rgba(253,224,71,0.9)] mx-auto w-32 h-32 md:w-[180px] md:h-[180px]" />
                 </motion.div>
-                <h2 className="text-5xl md:text-7xl font-black mb-4 md:mb-6 tracking-tight drop-shadow-lg text-transparent bg-clip-text bg-gradient-to-b from-white to-white/80">ניצחון אדיר! 🏆</h2>
-                <p className="text-xl md:text-3xl mb-8 md:mb-12 leading-relaxed font-bold text-emerald-50">כל הכבוד <span className="text-yellow-300">{userName}</span>! סיימת את כל האתגרים של ב'2 והוכחת שאת/ה {t('אלוף', 'אלופה')} אמיתי/ת בחשבון!</p>
+                <h2 className="text-6xl md:text-8xl font-black mb-6 md:mb-8 tracking-tight drop-shadow-xl text-transparent bg-clip-text bg-gradient-to-b from-white to-yellow-200">ניצחון אדיר! 🏆</h2>
+                <p className="text-2xl md:text-4xl mb-12 md:mb-16 leading-relaxed font-bold text-white/90">כל הכבוד <span className="text-yellow-300 drop-shadow-md">{userName}</span>!<br />סיימת את כל האתגרים של ב'2 והוכחת שאת/ה {t('אלוף', 'אלופה')} אמיתי/ת בחשבון!</p>
 
-                <div className="flex flex-col sm:flex-row gap-4 md:gap-5 justify-center">
+                <div className="flex flex-col sm:flex-row gap-5 md:gap-6 justify-center">
                   <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                     onClick={() => setScreen('shareCertificate')}
-                    className="px-8 py-4 md:px-10 md:py-5 bg-purple-600 text-white rounded-xl md:rounded-full font-black text-xl md:text-2xl shadow-[0_10px_25px_-5px_rgba(147,51,234,0.5)] flex items-center justify-center gap-2 md:gap-3 border-4 border-purple-400/50"
+                    className="px-10 py-5 md:px-12 md:py-6 bg-purple-600 text-white rounded-2xl md:rounded-full font-black text-2xl md:text-3xl shadow-[0_15px_35px_-5px_rgba(147,51,234,0.6)] flex items-center justify-center gap-3 md:gap-4 border-4 border-purple-400"
                   >
-                    <Download strokeWidth={3} className="w-5 h-5 md:w-6 md:h-6" /> התעודה שלי
+                    <Download strokeWidth={3} className="w-6 h-6 md:w-8 md:h-8" /> התעודה שלי
                   </motion.button>
                   <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                     onClick={() => setScreen('welcome')}
-                    className="px-8 py-4 md:px-10 md:py-5 bg-white text-teal-700 rounded-xl md:rounded-full font-black text-xl md:text-2xl shadow-xl border-4 border-white/50"
+                    className="px-10 py-5 md:px-12 md:py-6 bg-white text-indigo-800 rounded-2xl md:rounded-full font-black text-2xl md:text-3xl shadow-xl border-4 border-white/50 hover:bg-slate-50"
                   >
                     למסך הראשי
                   </motion.button>
