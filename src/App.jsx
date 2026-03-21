@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Heart, Trophy, Timer, Star, ArrowLeft, ArrowRight, User, Play, RefreshCcw, XCircle, Map, HelpCircle, X, Download, Lock, CheckCircle2, Home } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { track } from '@vercel/analytics';
 
 // --- Constants & Data ---
 const TOTAL_CHALLENGES = 8;
@@ -337,34 +336,6 @@ export default function App() {
 
   const timerRef = useRef(null);
   const feedbackTimerRef = useRef(null);
-  const sessionStartRef = useRef(null);
-
-  useEffect(() => {
-    if (screen === 'map' && !sessionStartRef.current) {
-      sessionStartRef.current = Date.now();
-      track('Game Started', { difficulty });
-    }
-    
-    if (screen === 'welcome') {
-      sessionStartRef.current = null;
-    }
-    
-    if (screen === 'challengeIntro') {
-      track('Challenge Entered', { theme: THEMES[challengeIdx]?.name || 'unknown', challengeIdx });
-    } else if (screen === 'challengeComplete') {
-      track('Challenge Completed', { theme: THEMES[challengeIdx]?.name || 'unknown', challengeIdx });
-    } else if (screen === 'victory' && sessionStartRef.current) {
-      const durationSec = Math.round((Date.now() - sessionStartRef.current) / 1000);
-      track('Game Victory', { durationSec, difficulty });
-      sessionStartRef.current = null;
-    } else if (screen === 'gameOver' && sessionStartRef.current) {
-      const durationSec = Math.round((Date.now() - sessionStartRef.current) / 1000);
-      track('Game Over', { durationSec, reachedChallengeIdx: challengeIdx, difficulty });
-      sessionStartRef.current = null;
-    } else if (screen === 'shareCertificate') {
-      track('Share Certificate Viewed', { earnedPrizesCount: earnedPrizes.length });
-    }
-  }, [screen, challengeIdx, difficulty, earnedPrizes.length]);
 
   const t = useCallback((m, f) => (gender === 'male' ? m : f), [gender]);
 
