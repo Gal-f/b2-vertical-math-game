@@ -907,7 +907,7 @@ export default function App() {
             </motion.div>
           )}
 
-          {/* --- FEEDBACK SCREEN --- */}
+          {/* --- FEEDBACK SCREEN (Unified Mobile + 2-Column Desktop) --- */}
           {screen === 'feedback' && (
             <motion.div key="feedback" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="relative flex-1 flex flex-col items-center justify-center p-4 md:p-8 overflow-y-auto w-full h-full">
               <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-md" />
@@ -916,59 +916,67 @@ export default function App() {
                 <Home size={18} className="md:w-[20px] md:h-[20px]" /> למפה
               </button>
 
-              <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="relative z-10 p-6 md:p-10 rounded-3xl md:rounded-[3rem] shadow-2xl w-full max-w-sm md:max-w-xl flex flex-col items-center bg-white/95 backdrop-blur-xl border-t-[8px] md:border-t-[12px] border-rose-500 my-auto shrink-0">
+              {/* Changed from max-w-xl to max-w-4xl, implemented flex-col md:flex-row */}
+              <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="relative z-10 p-5 md:p-8 rounded-3xl md:rounded-[3rem] shadow-2xl w-full max-w-sm md:max-w-4xl flex flex-col md:flex-row gap-5 md:gap-10 items-center bg-white/95 backdrop-blur-xl border-t-[8px] md:border-t-[12px] border-rose-500 my-auto shrink-0">
 
-                {feedbackType === 'timeout' && (
-                  <div className="text-center mb-6 md:mb-8">
-                    <motion.div animate={{ rotate: [-10, 10, -10] }} transition={{ repeat: Infinity, duration: 1 }}>
-                      <Timer className="text-rose-500 mx-auto mb-3 md:mb-5 drop-shadow-md w-16 h-16 md:w-24 md:h-24" />
+                {/* Left Column (or Top on Mobile): Text, Hearts, Continue Button */}
+                <div className="flex-1 flex flex-col items-center justify-center w-full text-center">
+                  {feedbackType === 'timeout' ? (
+                    <div className="mb-4 md:mb-6">
+                      <motion.div animate={{ rotate: [-10, 10, -10] }} transition={{ repeat: Infinity, duration: 1 }}>
+                        <Timer className="text-rose-500 mx-auto mb-2 md:mb-4 drop-shadow-md w-14 h-14 md:w-20 md:h-20" />
+                      </motion.div>
+                      <h2 className="text-3xl md:text-4xl font-black text-rose-600">אוי, הזמן נגמר!</h2>
+                    </div>
+                  ) : (
+                    <div className="mb-4 md:mb-6">
+                      <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 2 }}>
+                        <XCircle className="text-rose-500 mx-auto mb-2 md:mb-4 drop-shadow-md w-14 h-14 md:w-20 md:h-20" />
+                      </motion.div>
+                      <h2 className="text-3xl md:text-4xl font-black text-rose-600">{t('לא נורא, תטעה ותלמד!', 'לא נורא, תטעי ותלמדי!')}</h2>
+                      {confusedOperation && (
+                        <div className="bg-orange-100 text-orange-800 p-3 md:p-4 rounded-xl md:rounded-2xl mt-3 md:mt-4 font-black border-2 border-orange-200 shadow-sm text-sm md:text-lg">
+                          נראה שהתבלבלת בין חיבור לחיסור! שימו לב לסימן.
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-2 md:gap-4 mb-4 md:mb-6 bg-rose-50 px-4 py-3 md:px-6 md:py-4 rounded-xl md:rounded-2xl border-2 border-rose-200 w-full max-w-sm justify-center shadow-sm">
+                    <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1.5 }}>
+                      <Heart fill="#f43f5e" stroke="#f43f5e" className="w-6 h-6 md:w-8 md:h-8 drop-shadow-sm" />
                     </motion.div>
-                    <h2 className="text-3xl md:text-4xl font-black text-rose-600">אוי, הזמן נגמר!</h2>
-                    <p className="text-slate-600 mt-2 md:mt-3 text-lg md:text-xl font-medium">אל דאגה, בואו נראה איך פותרים את זה:</p>
+                    <span className="text-xl md:text-2xl font-black text-rose-600">נשארו לך {hearts} לבבות</span>
                   </div>
-                )}
 
-                {feedbackType === 'error' && (
-                  <div className="text-center mb-6 md:mb-8">
-                    <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 2 }}>
-                      <XCircle className="text-rose-500 mx-auto mb-3 md:mb-5 drop-shadow-md w-16 h-16 md:w-24 md:h-24" />
-                    </motion.div>
-                    <h2 className="text-3xl md:text-4xl font-black text-rose-600">{t('לא נורא, תטעה ותלמד!', 'לא נורא, תטעי ותלמדי!')}</h2>
-                    {confusedOperation && (
-                      <div className="bg-orange-100 text-orange-800 p-3 md:p-5 rounded-xl md:rounded-2xl mt-4 md:mt-6 font-black border-2 border-orange-200 shadow-sm text-base md:text-xl">
-                        נראה שהתבלבלת בין חיבור לחיסור! שימו לב לסימן.
-                      </div>
-                    )}
-                    <p className="text-slate-600 mt-3 md:mt-5 text-lg md:text-xl font-medium">הנה הפתרון הנכון במאונך:</p>
-                  </div>
-                )}
-
-                <div className="p-4 md:p-6 bg-slate-50/80 rounded-2xl md:rounded-[2rem] mb-6 md:mb-8 w-full border-4 border-slate-200 shadow-inner flex justify-center transform scale-90 sm:scale-100 md:scale-110 origin-top">
-                  <VerticalProblem
-                    num1={currentEx.num1} num2={currentEx.num2} type={currentEx.type}
-                    isStatic
-                    correctData={calculateCorrectSolution(currentEx.num1, currentEx.num2, currentEx.type)}
-                    gender={gender}
-                  />
+                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                    onClick={advanceProgress}
+                    className="relative overflow-hidden w-full max-w-sm py-4 md:py-5 bg-indigo-600 text-white rounded-xl md:rounded-2xl font-black text-xl md:text-2xl shadow-xl flex items-center justify-center gap-2 md:gap-3 group border-b-4 border-indigo-800"
+                  >
+                    <div className="absolute left-0 top-0 h-full bg-white/20 transition-all duration-1000 ease-linear" style={{ width: `${(feedbackCountdown / 30) * 100}%` }}></div>
+                    <span className="relative z-10 flex items-center gap-2 md:gap-3">
+                      {t('ממשיכים לתרגיל הבא', 'ממשיכות לתרגיל הבא')} <ArrowLeft strokeWidth={3} className="w-5 h-5 md:w-6 md:h-6" />
+                      <span className="bg-black/20 px-3 py-1 md:px-4 md:py-1.5 rounded-lg md:rounded-xl text-sm md:text-lg shadow-inner border border-white/10">{feedbackCountdown}</span>
+                    </span>
+                  </motion.button>
                 </div>
 
-                <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8 bg-rose-50 px-4 py-3 md:px-8 md:py-5 rounded-xl md:rounded-2xl border-2 border-rose-200 w-full justify-center shadow-sm">
-                  <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-                    <Heart fill="#f43f5e" stroke="#f43f5e" className="w-6 h-6 md:w-8 md:h-8 drop-shadow-sm" />
-                  </motion.div>
-                  <span className="text-xl md:text-2xl font-black text-rose-600">נשארו לך {hearts} לבבות</span>
+                {/* Right Column (or Bottom on Mobile): The Correct Math Problem */}
+                <div className="flex-1 w-full flex flex-col items-center justify-center border-t-2 md:border-t-0 md:border-r-2 border-slate-200 pt-5 md:pt-0 md:pr-8">
+                  <p className="text-slate-600 mb-3 md:mb-5 text-lg md:text-xl font-medium hidden md:block">כך פותרים נכון במאונך:</p>
+                  <div className="p-4 md:p-6 bg-slate-50/80 rounded-2xl md:rounded-[2rem] w-full max-w-sm border-4 border-slate-200 shadow-inner flex justify-center">
+                    <div className="transform scale-90 sm:scale-100 origin-top">
+                      <VerticalProblem
+                        num1={currentEx.num1} num2={currentEx.num2} type={currentEx.type}
+                        isStatic
+                        correctData={calculateCorrectSolution(currentEx.num1, currentEx.num2, currentEx.type)}
+                        gender={gender}
+                      />
+                    </div>
+                  </div>
+                  <p className="text-slate-600 mt-3 font-bold md:hidden">הפתרון הנכון</p>
                 </div>
 
-                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                  onClick={advanceProgress}
-                  className="relative overflow-hidden w-full py-4 md:py-5 bg-indigo-600 text-white rounded-xl md:rounded-2xl font-black text-xl md:text-2xl shadow-xl flex items-center justify-center gap-2 md:gap-3 group border-b-4 border-indigo-800"
-                >
-                  <div className="absolute left-0 top-0 h-full bg-white/20 transition-all duration-1000 ease-linear" style={{ width: `${(feedbackCountdown / 30) * 100}%` }}></div>
-                  <span className="relative z-10 flex items-center gap-2 md:gap-3">
-                    {t('ממשיכים לתרגיל הבא', 'ממשיכות לתרגיל הבא')} <ArrowLeft strokeWidth={3} className="w-5 h-5 md:w-6 md:h-6" />
-                    <span className="bg-black/20 px-3 py-1 md:px-4 md:py-1.5 rounded-lg md:rounded-xl text-sm md:text-lg shadow-inner border border-white/10">{feedbackCountdown}</span>
-                  </span>
-                </motion.button>
               </motion.div>
             </motion.div>
           )}
@@ -1072,23 +1080,23 @@ export default function App() {
             <motion.div key="victory" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center justify-center flex-1 p-4 md:p-8 text-white text-center relative overflow-y-auto w-full h-full">
               <div className="absolute inset-0 bg-indigo-900/60 backdrop-blur-sm"></div>
 
-              <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.3 }} className="relative z-10 bg-black/40 p-8 md:p-14 rounded-3xl md:rounded-[3rem] backdrop-blur-2xl border border-white/30 shadow-2xl max-w-sm md:max-w-2xl w-full my-auto shrink-0">
+              <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.3 }} className="relative z-10 bg-black/40 p-8 md:p-14 rounded-3xl md:rounded-[3rem] backdrop-blur-2xl border border-white/30 shadow-2xl max-w-sm md:max-w-3xl w-full my-auto shrink-0">
                 <motion.div animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 2 }}>
-                  <Star fill="yellow" className="text-yellow-400 mb-6 md:mb-8 drop-shadow-[0_0_50px_rgba(253,224,71,0.9)] mx-auto w-24 h-24 md:w-[140px] md:h-[140px]" />
+                  <Star fill="yellow" className="text-yellow-400 mb-8 md:mb-10 drop-shadow-[0_0_50px_rgba(253,224,71,0.9)] mx-auto w-32 h-32 md:w-[180px] md:h-[180px]" />
                 </motion.div>
-                <h2 className="text-5xl md:text-7xl font-black mb-4 md:mb-6 tracking-tight drop-shadow-xl text-transparent bg-clip-text bg-gradient-to-b from-white to-yellow-200">ניצחון אדיר! 🏆</h2>
-                <p className="text-xl md:text-3xl mb-10 md:mb-14 leading-relaxed font-bold text-white/90">כל הכבוד <span className="text-yellow-300 drop-shadow-md">{userName}</span>!<br />סיימת את כל האתגרים של ב'2 והוכחת שאת/ה {t('אלוף', 'אלופה')} אמיתי/ת בחשבון!</p>
+                <h2 className="text-6xl md:text-8xl font-black mb-6 md:mb-8 tracking-tight drop-shadow-xl text-transparent bg-clip-text bg-gradient-to-b from-white to-yellow-200">ניצחון אדיר! 🏆</h2>
+                <p className="text-2xl md:text-4xl mb-12 md:mb-16 leading-relaxed font-bold text-white/90">כל הכבוד <span className="text-yellow-300 drop-shadow-md">{userName}</span>!<br />סיימת את כל האתגרים של ב'2 והוכחת שאת/ה {t('אלוף', 'אלופה')} אמיתי/ת בחשבון!</p>
 
-                <div className="flex flex-col sm:flex-row gap-4 md:gap-5 justify-center">
+                <div className="flex flex-col sm:flex-row gap-5 md:gap-6 justify-center">
                   <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                     onClick={() => setScreen('shareCertificate')}
-                    className="px-8 py-4 md:px-10 md:py-5 bg-purple-600 text-white rounded-xl md:rounded-full font-black text-xl md:text-2xl shadow-[0_15px_35px_-5px_rgba(147,51,234,0.6)] flex items-center justify-center gap-2 md:gap-3 border-4 border-purple-400"
+                    className="px-10 py-5 md:px-12 md:py-6 bg-purple-600 text-white rounded-2xl md:rounded-full font-black text-2xl md:text-3xl shadow-[0_15px_35px_-5px_rgba(147,51,234,0.6)] flex items-center justify-center gap-3 md:gap-4 border-4 border-purple-400"
                   >
-                    <Download strokeWidth={3} className="w-5 h-5 md:w-6 md:h-6" /> התעודה שלי
+                    <Download strokeWidth={3} className="w-6 h-6 md:w-8 md:h-8" /> התעודה שלי
                   </motion.button>
                   <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                     onClick={() => setScreen('welcome')}
-                    className="px-8 py-4 md:px-10 md:py-5 bg-white text-indigo-800 rounded-xl md:rounded-full font-black text-xl md:text-2xl shadow-xl border-4 border-white/50 hover:bg-slate-50"
+                    className="px-10 py-5 md:px-12 md:py-6 bg-white text-indigo-800 rounded-2xl md:rounded-full font-black text-2xl md:text-3xl shadow-xl border-4 border-white/50 hover:bg-slate-50"
                   >
                     למסך הראשי
                   </motion.button>
