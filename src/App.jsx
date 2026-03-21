@@ -336,6 +336,50 @@ export default function App() {
 
   const timerRef = useRef(null);
   const feedbackTimerRef = useRef(null);
+  const sessionStartRef = useRef(null);
+
+  useEffect(() => {
+    // Helper to safely call mixpanel
+    const track = (eventName, props) => {
+      if (window.mixpanel && window.mixpanel.track) {
+        window.mixpanel.track(eventName, props);
+      }
+    };
+
+    if (screen === 'map' && !sessionStartRef.current) {
+      sessionStartRef.current = Date.now();
+      // Identify user and set profile properties in Mixpanel
+      if (window.mixpanel && window.mixpanel.identify) {
+        window.mixpanel.identify(userName || 'Anonymous');
+        window.mixpanel.people.set({
+          $name: userName || 'Anonymous',
+          gender: gender,
+          difficulty_preference: difficulty
+        });
+      }
+      track('Game Started', { difficulty, gender });
+    }
+    
+    if (screen === 'welcome') {
+      sessionStartRef.current = null;
+    }
+    
+    if (screen === 'challengeIntro') {
+      track('Challenge Entered', { theme: THEMES[challengeIdx]?.name || 'unknown', challengeIdx });
+    } else if (screen === 'challengeComplete') {
+      track('Challenge Completed', { theme: THEMES[challengeIdx]?.name || 'unknown', challengeIdx });
+    } else if (screen === 'victory' && sessionStartRef.current) {
+      const durationSec = Math.round((Date.now() - sessionStartRef.current) / 1000);
+      track('Game Victory', { durationSec, difficulty });
+      sessionStartRef.current = null;
+    } else if (screen === 'gameOver' && sessionStartRef.current) {
+      const durationSec = Math.round((Date.now() - sessionStartRef.current) / 1000);
+      track('Game Over', { durationSec, reachedChallengeIdx: challengeIdx, difficulty });
+      sessionStartRef.current = null;
+    } else if (screen === 'shareCertificate') {
+      track('Share Certificate Viewed', { earnedPrizesCount: earnedPrizes.length });
+    }
+  }, [screen, challengeIdx, difficulty, earnedPrizes.length, userName, gender]);
 
   const t = useCallback((m, f) => (gender === 'male' ? m : f), [gender]);
 
