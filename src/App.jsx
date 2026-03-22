@@ -6,7 +6,7 @@ import confetti from 'canvas-confetti';
 // --- Constants & Data ---
 const TOTAL_CHALLENGES = 8;
 const TASKS_PER_CHALLENGE = 2;
-const EXERCISES_PER_TASK = 8;
+const EXERCISES_PER_TASK = 1;
 const MAX_HEARTS = 7;
 const INITIAL_HEARTS = 5;
 
@@ -568,11 +568,16 @@ export default function App() {
 
       const isVeryLast = (challengeIdx === TOTAL_CHALLENGES - 1 && taskIdx === TASKS_PER_CHALLENGE - 1 && exerciseIdx === EXERCISES_PER_TASK - 1);
       if (newConsecutive > 0 && newConsecutive % 4 === 0 && !isVeryLast) {
+        const marginX = window.innerWidth < 768 ? 280 : 400;
+        const marginY = 200;
+        const maxX = Math.max(20, window.innerWidth - marginX);
+        const maxY = Math.max(80, window.innerHeight - marginY);
+
         setBonusActive(true);
         setBonusMessageVisible(true);
         setBonusPos({
-          top: Math.random() * 50 + 20 + '%',
-          left: Math.random() * 50 + 20 + '%'
+          top: (Math.random() * (maxY - 80) + 80) + 'px',
+          left: (Math.random() * (maxX - 20) + 20) + 'px'
         });
         setTimeout(() => {
           setBonusActive(false);
@@ -1158,23 +1163,27 @@ export default function App() {
                 <motion.div initial={{ y: -20 }} animate={{ y: 0 }} className="max-w-sm md:max-w-2xl w-full relative mb-6 md:mb-8">
                   <div id="certificate-render" className="bg-white p-6 md:p-12 rounded-3xl md:rounded-[3rem] shadow-2xl border-[8px] md:border-[12px] border-yellow-400 w-full text-center relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none rounded-[2rem]" style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/cubes.png')` }}></div>
-                    <Star className="absolute top-6 right-6 md:top-8 md:right-8 text-yellow-400 drop-shadow-md w-10 h-10 md:w-16 md:h-16" fill="yellow" />
-                    <Star className="absolute top-6 left-6 md:top-8 md:left-8 text-yellow-400 drop-shadow-md w-10 h-10 md:w-16 md:h-16" fill="yellow" />
+                    <Star className="absolute top-6 right-6 md:top-8 md:right-8 text-yellow-400 drop-shadow-md w-10 h-10 md:w-16 md:h-16 overflow-visible" fill="yellow" />
+                    <Star className="absolute top-6 left-6 md:top-8 md:left-8 text-yellow-400 drop-shadow-md w-10 h-10 md:w-16 md:h-16 overflow-visible" fill="yellow" />
 
                     <div className="relative z-10 mt-2 md:mt-0">
-                      <Trophy className="mx-auto mb-4 md:mb-6 text-yellow-500 drop-shadow-lg w-16 h-16 md:w-24 md:h-24" />
+                      <Trophy className="mx-auto mb-4 md:mb-6 text-yellow-500 drop-shadow-lg w-16 h-16 md:w-24 md:h-24 overflow-visible" />
                       <h2 className="text-4xl md:text-5xl font-black text-indigo-800 mb-2 md:mb-4 tracking-tight">תעודת הצטיינות</h2>
                       <p className="text-xl md:text-2xl text-slate-500 mb-6 md:mb-8 font-medium">ל{gender === 'male' ? 'שחקן' : 'שחקנית'} ה{t('אלוף', 'אלופה')}:</p>
-                      <div className="inline-block relative mb-8 md:mb-10">
-                        <h3 className="text-5xl md:text-6xl font-black text-indigo-700 px-6 md:px-10 pb-2 md:pb-4 relative z-10 leading-tight">{userName}</h3>
-                        <div className="absolute bottom-0 left-0 w-full h-3 md:h-4 bg-yellow-300 rounded-full opacity-50 transform -skew-x-12"></div>
+
+                      <div className="mb-8 md:mb-10 block">
+                        <span className="text-5xl md:text-6xl font-black text-indigo-700 px-6 md:px-10 border-b-8 border-yellow-300 pb-2 leading-none inline-block">{userName}</span>
                       </div>
 
                       <p className="font-black text-slate-700 text-lg md:text-xl mb-4 md:mb-6">אלו הפרסים שזכיתי בהם במשחק של ב׳2:</p>
                       <div className="flex flex-wrap justify-center gap-3 md:gap-5 bg-slate-50 p-4 md:p-8 rounded-2xl md:rounded-[2rem] min-h-[100px] md:min-h-[140px] border-4 border-slate-100 shadow-inner">
                         {earnedPrizes.length > 0
-                          ? earnedPrizes.map((p, i) => <span key={i} className="text-4xl md:text-5xl bg-white p-3 md:p-5 rounded-xl md:rounded-2xl shadow-md border border-slate-100" style={{ fontFamily: '"Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif' }}>{p}</span>)
-                          : <span className="text-slate-400 text-base md:text-lg font-bold flex items-center h-full text-center">עוד אין פרסים, המשיכו לשחק!</span>
+                          ? earnedPrizes.map((p, i) => (
+                            <div key={i} className="text-4xl md:text-5xl bg-white w-16 h-16 md:w-24 md:h-24 flex items-center justify-center rounded-xl md:rounded-2xl shadow-md border border-slate-100" style={{ fontFamily: '"Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif', lineHeight: 1 }}>
+                              {p}
+                            </div>
+                          ))
+                          : <div className="text-slate-400 text-base md:text-lg font-bold flex items-center h-full text-center justify-center w-full">עוד אין פרסים, המשיכו לשחק!</div>
                         }
                       </div>
                     </div>
@@ -1210,9 +1219,9 @@ export default function App() {
               <div className="relative z-10 bg-black/30 p-8 md:p-14 rounded-3xl md:rounded-[3rem] backdrop-blur-xl border border-white/20 shadow-2xl max-w-sm md:max-w-xl my-auto shrink-0 w-full">
                 <h2 className="text-4xl md:text-6xl font-black mb-4 md:mb-6 drop-shadow-md">אופס, נגמרו הלבבות!</h2>
                 <p className="text-xl md:text-3xl mb-6 md:mb-8 opacity-95 font-medium">{userName}, לא קרה כלום.<br /><br />כל {t('גיבור', 'גיבורה')} צריכים להתאמן קצת יותר לפעמים!</p>
-                
+
                 <div className="bg-white/20 text-white font-bold p-4 md:p-6 rounded-2xl mb-8 md:mb-10 border border-white/30 shadow-inner leading-relaxed">
-                  <span className="text-2xl md:text-4xl block text-yellow-300 drop-shadow-md mb-2">פתרת { (challengeIdx * TASKS_PER_CHALLENGE * EXERCISES_PER_TASK) + (taskIdx * EXERCISES_PER_TASK) + exerciseIdx } תרגילים!</span>
+                  <span className="text-2xl md:text-4xl block text-yellow-300 drop-shadow-md mb-2">פתרת {(challengeIdx * TASKS_PER_CHALLENGE * EXERCISES_PER_TASK) + (taskIdx * EXERCISES_PER_TASK) + exerciseIdx} תרגילים!</span>
                   <span className="text-lg md:text-xl opacity-90">נכון שזה היה הרבה יותר מהר מאשר בחוברת חשבון? 😉</span>
                 </div>
 
