@@ -169,8 +169,14 @@ const VerticalProblem = ({
   resTens, setResTens, resOnes, setResOnes,
   carryTens, setCarryTens, carryOnes, setCarryOnes,
   isStatic = false, correctData = null,
-  gender = 'male'
+  gender = 'male',
+  onEnter
 }) => {
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && onEnter) {
+      onEnter();
+    }
+  };
   const n1Tens = Math.floor(num1 / 10);
   const n1Ones = num1 % 10;
   const n2Tens = Math.floor(num2 / 10) || ' ';
@@ -186,8 +192,8 @@ const VerticalProblem = ({
   const displayResTens = isStatic ? correctData?.resTens : resTens;
   const displayResOnes = isStatic ? correctData?.resOnes : resOnes;
 
-  const strikeTens = displayCarryTens !== '' && displayCarryTens !== undefined;
-  const strikeOnes = displayCarryOnes !== '' && displayCarryOnes !== undefined;
+  const strikeTens = type === '-' && displayCarryTens !== '' && displayCarryTens !== undefined;
+  const strikeOnes = type === '-' && displayCarryOnes !== '' && displayCarryOnes !== undefined;
 
   const t = (m, f) => gender === 'male' ? m : f;
 
@@ -200,7 +206,7 @@ const VerticalProblem = ({
           animate={{ opacity: 1, h: 'auto' }}
           className="min-h-[1.5rem] md:min-h-[2rem] text-[10px] md:text-[14px] font-sans text-slate-500 mb-1 md:mb-3 font-bold transition-opacity text-center w-full" dir="rtl"
         >
-          {activeCarry && !isStatic ? t('כתוב המרה 👇🏼', 'כתבי המרה 👇🏼') : ''}
+          {activeCarry && !isStatic ? t('כתוב כאן את ההמרה של הספרה שמתחת לריבוע 👇🏼', 'כתבי כאן את ההמרה של הספרה שמתחת לריבוע 👇🏼') : ''}
         </motion.div>
       </AnimatePresence>
 
@@ -213,6 +219,7 @@ const VerticalProblem = ({
               type="text" maxLength="1"
               value={carryTens}
               onChange={(e) => setCarryTens(e.target.value.replace(/[^0-9]/g, ''))}
+              onKeyDown={handleKeyDown}
               onFocus={() => setActiveCarry('tens')}
               onBlur={() => setActiveCarry(null)}
               className="w-10 h-10 md:w-14 md:h-14 border-2 border-dashed border-blue-300 rounded-lg md:rounded-xl text-center text-lg md:text-2xl bg-blue-50/50 focus:outline-none focus:bg-white shadow-sm transition-colors"
@@ -232,6 +239,7 @@ const VerticalProblem = ({
               type="text" maxLength="2"
               value={carryOnes}
               onChange={(e) => setCarryOnes(e.target.value.replace(/[^0-9]/g, ''))}
+              onKeyDown={handleKeyDown}
               onFocus={() => setActiveCarry('ones')}
               onBlur={() => setActiveCarry(null)}
               className="w-10 h-10 md:w-14 md:h-14 border-2 border-dashed border-blue-300 rounded-lg md:rounded-xl text-center text-lg md:text-2xl bg-blue-50/50 focus:outline-none focus:bg-white shadow-sm transition-colors"
@@ -245,7 +253,7 @@ const VerticalProblem = ({
       </div>
 
       <div className="flex flex-col items-end border-b-4 md:border-b-[6px] border-slate-800 pb-2 md:pb-4 w-48 md:w-72 pr-2 relative bg-slate-50 rounded-t-xl md:rounded-t-2xl p-2 md:p-4 shadow-inner">
-        <span className="absolute left-2 md:left-4 bottom-2 md:bottom-4 text-4xl md:text-6xl text-slate-300 font-black">{type}</span>
+        <span className="absolute left-2 md:left-4 bottom-2 md:bottom-4 text-4xl md:text-6xl text-slate-700 font-black">{type}</span>
 
         <div className="flex gap-2 md:gap-4 tracking-widest relative z-10">
           <div className={`w-10 md:w-14 text-center relative ${strikeTens ? "text-slate-400" : "text-slate-700"}`}>
@@ -276,6 +284,7 @@ const VerticalProblem = ({
                 setResTens(e.target.value.replace(/[^0-9-]/g, ''));
                 if (e.target.value) onesRef.current?.focus();
               }}
+              onKeyDown={handleKeyDown}
               className="w-10 h-12 md:w-16 md:h-16 border-2 border-slate-300 rounded-lg md:rounded-xl text-center text-2xl md:text-4xl bg-white focus:outline-none focus:border-green-500 shadow-inner text-slate-800 font-bold transition-all"
             />
             <motion.input
@@ -287,6 +296,7 @@ const VerticalProblem = ({
                 setResOnes(e.target.value.replace(/[^0-9]/g, ''));
                 if (e.target.value) tensRef.current?.focus();
               }}
+              onKeyDown={handleKeyDown}
               className="w-10 h-12 md:w-16 md:h-16 border-2 border-slate-300 rounded-lg md:rounded-xl text-center text-2xl md:text-4xl bg-white focus:outline-none focus:border-green-500 shadow-inner text-slate-800 font-bold transition-all"
             />
           </>
@@ -430,6 +440,21 @@ export default function App() {
     setScreen('playing');
   }, [challengeIdx, difficulty, taskIdx, exerciseIdx]);
 
+  const retryExercise = useCallback(() => {
+    clearInterval(feedbackTimerRef.current);
+    setResTens('');
+    setResOnes('');
+    setCarryTens('');
+    setCarryOnes('');
+    setIsChecking(false);
+    setIsSuccessAction(false);
+
+    const settings = getDifficultySettings(difficulty, challengeIdx);
+    setTimeLeft(settings.time);
+    setTimerActive(true);
+    setScreen('playing');
+  }, [challengeIdx, difficulty]);
+
   useEffect(() => {
     if (timerActive && !showInstructions && !isChecking && timeLeft > 0) {
       timerRef.current = setInterval(() => {
@@ -448,7 +473,7 @@ export default function App() {
         setFeedbackCountdown(prev => {
           if (prev <= 1) {
             clearInterval(feedbackTimerRef.current);
-            advanceProgress();
+            retryExercise();
             return 0;
           }
           return prev - 1;
@@ -456,7 +481,7 @@ export default function App() {
       }, 1000);
     }
     return () => clearInterval(feedbackTimerRef.current);
-  }, [screen]);
+  }, [screen, retryExercise]);
 
   useEffect(() => {
     if (screen === 'victory') fireVictoryConfetti();
@@ -661,6 +686,10 @@ export default function App() {
               >
                 מתחילים! <ArrowLeft strokeWidth={4} className="w-6 h-6 md:w-10 md:h-10" />
               </motion.button>
+              
+              <div className="absolute bottom-4 left-0 w-full text-center text-white/70 font-medium text-sm md:text-base drop-shadow-md pb-2">
+                המשחק נוצר על ידי אדם וגל אבא של אדם
+              </div>
             </motion.div>
           )}
 
@@ -729,9 +758,14 @@ export default function App() {
             <motion.div key="map" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col flex-1 relative overflow-hidden text-white w-full h-full min-h-0">
               <div className="p-4 md:p-6 bg-black/40 backdrop-blur-md flex justify-between items-center shadow-xl z-20 border-b border-white/10 shrink-0">
                 <h2 className="text-xl md:text-4xl font-black flex items-center gap-2 md:gap-4 drop-shadow-md"><Map className="text-indigo-300 w-6 h-6 md:w-10 md:h-10" /> מפת האתגרים</h2>
-                <div className="flex items-center gap-2 md:gap-3 text-yellow-300 font-bold bg-black/40 px-3 py-1.5 md:px-6 md:py-3 text-sm md:text-xl rounded-full border border-white/20 shadow-inner backdrop-blur-sm">
+                <motion.button 
+                  whileHover={{ scale: 1.05 }} 
+                  whileTap={{ scale: 0.95 }} 
+                  onClick={() => setScreen('shareCertificate')} 
+                  className="flex items-center gap-2 md:gap-3 text-yellow-300 font-bold bg-black/40 hover:bg-black/60 cursor-pointer px-3 py-1.5 md:px-6 md:py-3 text-sm md:text-xl rounded-full border border-white/20 shadow-inner backdrop-blur-sm transition-colors"
+                >
                   <Trophy className="w-4 h-4 md:w-6 md:h-6" /> {earnedPrizes.length === 0 ? 'אין' : earnedPrizes.join(' ')}
-                </div>
+                </motion.button>
               </div>
 
               <div className="flex-1 p-4 md:p-8 flex flex-col items-center justify-start gap-4 md:gap-8 relative overflow-y-auto pb-12 md:pb-20">
@@ -769,6 +803,10 @@ export default function App() {
                     );
                   })}
                 </motion.div>
+
+                <div className="mt-8 relative z-10 text-center text-white/70 font-medium text-sm md:text-base drop-shadow-md w-full max-w-sm md:max-w-2xl bg-black/40 py-3 rounded-full border border-white/10 backdrop-blur-sm">
+                  המשחק נוצר על ידי אדם וגל אבא של אדם
+                </div>
               </div>
             </motion.div>
           )}
@@ -880,6 +918,9 @@ export default function App() {
                     resTens={resTens} setResTens={setResTens} resOnes={resOnes} setResOnes={setResOnes}
                     carryTens={carryTens} setCarryTens={setCarryTens} carryOnes={carryOnes} setCarryOnes={setCarryOnes}
                     gender={gender}
+                    onEnter={() => {
+                      if ((resOnes || resTens) && !isChecking) checkAnswer();
+                    }}
                   />
 
                   <motion.button whileHover={{ scale: (!resOnes && !resTens) || isChecking ? 1 : 1.05 }} whileTap={{ scale: (!resOnes && !resTens) || isChecking ? 1 : 0.95 }}
@@ -935,7 +976,7 @@ export default function App() {
                 {showInstructions && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4 md:p-6 backdrop-blur-md">
                     <motion.div initial={{ y: 50, scale: 0.9 }} animate={{ y: 0, scale: 1 }} exit={{ y: 20, scale: 0.9 }} className="bg-white/95 backdrop-blur-xl p-6 md:p-10 rounded-2xl md:rounded-[3rem] max-w-sm md:max-w-xl w-full relative shadow-2xl border border-white/50 max-h-[90vh] overflow-y-auto">
-                      <button onClick={() => setShowInstructions(false)} className="absolute top-4 right-4 md:top-6 md:right-6 text-slate-500 hover:text-slate-900 bg-slate-100 p-1.5 md:p-2 rounded-full"><X className="w-5 h-5 md:w-7 md:h-7" /></button>
+                      <button onClick={() => setShowInstructions(false)} className="absolute top-4 left-4 md:top-6 md:left-6 text-slate-500 hover:text-slate-900 bg-slate-100 p-1.5 md:p-2 rounded-full shadow-sm transition-colors"><X className="w-5 h-5 md:w-7 md:h-7" /></button>
                       <h2 className="text-2xl md:text-4xl font-black mb-6 md:mb-8 text-indigo-700 border-b-4 border-indigo-100 pb-3 md:pb-4">איך משחקים?</h2>
                       <ul className="space-y-4 md:space-y-6 text-base md:text-xl text-slate-800 font-medium">
                         <li className="flex items-start gap-3 md:gap-4 bg-slate-100/50 p-3 md:p-4 rounded-xl md:rounded-2xl"><Timer className="text-indigo-600 shrink-0 mt-0.5 md:mt-1 w-6 h-6 md:w-8 md:h-8" /> <div><b className="text-slate-900">הזמן רץ!</b> פתרו את התרגילים לפני שהשעון יתאפס.</div></li>
@@ -994,12 +1035,12 @@ export default function App() {
                   </div>
 
                   <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                    onClick={advanceProgress}
+                    onClick={retryExercise}
                     className="relative overflow-hidden w-full max-w-sm py-4 md:py-5 bg-indigo-600 text-white rounded-xl md:rounded-2xl font-black text-xl md:text-2xl shadow-xl flex items-center justify-center gap-2 md:gap-3 group border-b-4 border-indigo-800"
                   >
                     <div className="absolute left-0 top-0 h-full bg-white/20 transition-all duration-1000 ease-linear" style={{ width: `${(feedbackCountdown / 30) * 100}%` }}></div>
                     <span className="relative z-10 flex items-center gap-2 md:gap-3">
-                      {t('ממשיכים לתרגיל הבא', 'ממשיכות לתרגיל הבא')} <ArrowLeft strokeWidth={3} className="w-5 h-5 md:w-6 md:h-6" />
+                      {t('מנסים שוב', 'מנסות שוב')} <RefreshCcw strokeWidth={3} className="w-5 h-5 md:w-6 md:h-6" />
                       <span className="bg-black/20 px-3 py-1 md:px-4 md:py-1.5 rounded-lg md:rounded-xl text-sm md:text-lg shadow-inner border border-white/10">{feedbackCountdown}</span>
                     </span>
                   </motion.button>
@@ -1040,12 +1081,27 @@ export default function App() {
                   </motion.div>
                 </div>
 
-                <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                  onClick={handleChallengeCompleteToMap}
-                  className="px-8 py-4 md:px-12 md:py-5 bg-emerald-500 rounded-full font-black text-xl md:text-2xl shadow-[0_15px_35px_-5px_rgba(16,185,129,0.5)] flex items-center gap-2 md:gap-3 border-4 border-emerald-300 w-full justify-center"
-                >
-                  <Map className="w-6 h-6 md:w-8 md:h-8" /> חזרה למפה
-                </motion.button>
+                <div className="flex flex-col sm:flex-row gap-4 md:gap-6 w-full mt-4 md:mt-2">
+                  <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                    onClick={() => {
+                      if (challengeIdx < TOTAL_CHALLENGES - 1) {
+                        setChallengeIdx(c => c + 1);
+                      }
+                      setTaskIdx(0);
+                      setExerciseIdx(0);
+                      setScreen('shareCertificate');
+                    }}
+                    className="flex-1 px-4 py-4 md:px-8 md:py-5 bg-purple-600 text-white rounded-full font-black text-xl md:text-2xl shadow-[0_15px_35px_-5px_rgba(147,51,234,0.5)] flex items-center justify-center gap-2 md:gap-3 border-4 border-purple-400"
+                  >
+                    <Download className="w-6 h-6 md:w-8 md:h-8" /> צפייה בהישגים
+                  </motion.button>
+                  <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                    onClick={handleChallengeCompleteToMap}
+                    className="flex-1 px-4 py-4 md:px-8 md:py-5 bg-emerald-500 text-white rounded-full font-black text-xl md:text-2xl shadow-[0_15px_35px_-5px_rgba(16,185,129,0.5)] flex items-center justify-center gap-2 md:gap-3 border-4 border-emerald-300"
+                  >
+                    <Map className="w-6 h-6 md:w-8 md:h-8" /> חזרה למפה
+                  </motion.button>
+                </div>
               </motion.div>
             </motion.div>
           )}
@@ -1088,10 +1144,10 @@ export default function App() {
                     <Download className="w-6 h-6 md:w-8 md:h-8" /> {t('שתף', 'שתפי')} הישגים
                   </motion.button>
                   <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                    onClick={() => setScreen('welcome')}
+                    onClick={() => setScreen('map')}
                     className="py-4 md:py-5 px-6 md:px-10 bg-white text-slate-700 rounded-xl md:rounded-2xl font-black text-lg md:text-xl shadow-xl border-b-4 md:border-b-[6px] border-slate-200"
                   >
-                    למסך הראשי
+                    חזרה למפה
                   </motion.button>
                 </div>
               </div>
