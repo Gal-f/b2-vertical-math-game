@@ -6,7 +6,7 @@ import confetti from 'canvas-confetti';
 // --- Constants & Data ---
 const TOTAL_CHALLENGES = 8;
 const TASKS_PER_CHALLENGE = 2;
-const EXERCISES_PER_TASK = 1;
+const EXERCISES_PER_TASK = 8;
 const MAX_HEARTS = 7;
 const INITIAL_HEARTS = 5;
 
@@ -628,18 +628,17 @@ export default function App() {
     if (!node) return;
 
     try {
-      if (!window.html2canvas) {
+      if (!window.htmlToImage) {
         await new Promise((resolve, reject) => {
           const script = document.createElement('script');
-          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js';
           script.onload = resolve;
           script.onerror = reject;
           document.head.appendChild(script);
         });
       }
 
-      const canvas = await window.html2canvas(node, { scale: 2, backgroundColor: '#f8fafc' });
-      const dataUrl = canvas.toDataURL('image/png');
+      const dataUrl = await window.htmlToImage.toPng(node, { pixelRatio: 2, backgroundColor: '#ffffff' });
 
       const link = document.createElement('a');
       link.download = `התעודה_של_${userName}.png`;
@@ -796,14 +795,26 @@ export default function App() {
             <motion.div key="map" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col flex-1 relative overflow-hidden text-white w-full h-full min-h-0">
               <div className="p-4 md:p-6 bg-black/40 backdrop-blur-md flex justify-between items-center shadow-xl z-20 border-b border-white/10 shrink-0">
                 <h2 className="text-xl md:text-4xl font-black flex items-center gap-2 md:gap-4 drop-shadow-md"><Map className="text-indigo-300 w-6 h-6 md:w-10 md:h-10" /> מפת האתגרים</h2>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setScreen('shareCertificate')}
-                  className="flex items-center gap-2 md:gap-3 text-yellow-300 font-bold bg-black/40 hover:bg-black/60 cursor-pointer px-3 py-1.5 md:px-6 md:py-3 text-sm md:text-xl rounded-full border border-white/20 shadow-inner backdrop-blur-sm transition-colors"
-                >
-                  <Trophy className="w-4 h-4 md:w-6 md:h-6" /> {earnedPrizes.length === 0 ? 'אין' : earnedPrizes.join(' ')}
-                </motion.button>
+                <div className="flex gap-2 md:gap-4">
+                  {earnedPrizes.length === TOTAL_CHALLENGES && (
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setScreen('victory')}
+                      className="flex items-center justify-center p-2 md:p-3 bg-yellow-400 text-indigo-900 rounded-full border border-white/20 shadow-lg"
+                    >
+                      <Trophy className="w-5 h-5 md:w-7 md:h-7" />
+                    </motion.button>
+                  )}
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setScreen('shareCertificate')}
+                    className="flex items-center gap-2 md:gap-3 text-yellow-300 font-bold bg-black/40 hover:bg-black/60 cursor-pointer px-3 py-1.5 md:px-6 md:py-3 text-sm md:text-xl rounded-full border border-white/20 shadow-inner backdrop-blur-sm transition-colors"
+                  >
+                    <Trophy className="w-4 h-4 md:w-6 md:h-6" /> {earnedPrizes.length === 0 ? 'אין' : earnedPrizes.join(' ')}
+                  </motion.button>
+                </div>
               </div>
 
               <div className="flex-1 p-4 md:p-8 flex flex-col items-center justify-start gap-4 md:gap-8 relative overflow-y-auto pb-12 md:pb-20">
@@ -1147,7 +1158,11 @@ export default function App() {
                     onClick={handleChallengeCompleteToMap}
                     className="flex-1 px-4 py-4 md:px-8 md:py-5 bg-emerald-500 text-white rounded-full font-black text-xl md:text-2xl shadow-[0_15px_35px_-5px_rgba(16,185,129,0.5)] flex items-center justify-center gap-2 md:gap-3 border-4 border-emerald-300"
                   >
-                    <Map className="w-6 h-6 md:w-8 md:h-8" /> חזרה למפה
+                    {challengeIdx < TOTAL_CHALLENGES - 1 ? (
+                      <><Map className="w-6 h-6 md:w-8 md:h-8" /> חזרה למפה</>
+                    ) : (
+                      <><Trophy className="w-6 h-6 md:w-8 md:h-8 text-yellow-200" /> למסך הניצחון</>
+                    )}
                   </motion.button>
                 </div>
               </motion.div>
@@ -1163,11 +1178,11 @@ export default function App() {
                 <motion.div initial={{ y: -20 }} animate={{ y: 0 }} className="max-w-sm md:max-w-2xl w-full relative mb-6 md:mb-8">
                   <div id="certificate-render" className="bg-white p-6 md:p-12 rounded-3xl md:rounded-[3rem] shadow-2xl border-[8px] md:border-[12px] border-yellow-400 w-full text-center relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none rounded-[2rem]" style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/cubes.png')` }}></div>
-                    <Star className="absolute top-6 right-6 md:top-8 md:right-8 text-yellow-400 drop-shadow-md w-10 h-10 md:w-16 md:h-16 overflow-visible" fill="yellow" />
-                    <Star className="absolute top-6 left-6 md:top-8 md:left-8 text-yellow-400 drop-shadow-md w-10 h-10 md:w-16 md:h-16 overflow-visible" fill="yellow" />
+                    <Star className="absolute top-6 right-6 md:top-8 md:right-8 text-yellow-400 w-10 h-10 md:w-16 md:h-16" fill="yellow" />
+                    <Star className="absolute top-6 left-6 md:top-8 md:left-8 text-yellow-400 w-10 h-10 md:w-16 md:h-16" fill="yellow" />
 
                     <div className="relative z-10 mt-2 md:mt-0">
-                      <Trophy className="mx-auto mb-4 md:mb-6 text-yellow-500 drop-shadow-lg w-16 h-16 md:w-24 md:h-24 overflow-visible" />
+                      <Trophy className="mx-auto mb-4 md:mb-6 text-yellow-500 w-16 h-16 md:w-24 md:h-24" />
                       <h2 className="text-4xl md:text-5xl font-black text-indigo-800 mb-2 md:mb-4 tracking-tight">תעודת הצטיינות</h2>
                       <p className="text-xl md:text-2xl text-slate-500 mb-6 md:mb-8 font-medium">ל{gender === 'male' ? 'שחקן' : 'שחקנית'} ה{t('אלוף', 'אלופה')}:</p>
 
@@ -1176,12 +1191,12 @@ export default function App() {
                       </div>
 
                       <p className="font-black text-slate-700 text-lg md:text-xl mb-4 md:mb-6">אלו הפרסים שזכיתי בהם במשחק של ב׳2:</p>
-                      <div className="flex flex-wrap justify-center gap-3 md:gap-5 bg-slate-50 p-4 md:p-8 rounded-2xl md:rounded-[2rem] min-h-[100px] md:min-h-[140px] border-4 border-slate-100 shadow-inner">
+                      <div className="flex flex-wrap justify-center gap-3 md:gap-5 bg-slate-50 p-4 md:p-8 rounded-2xl md:rounded-[2rem] min-h-[100px] md:min-h-[140px] border-4 border-slate-100 shadow-inner items-center">
                         {earnedPrizes.length > 0
                           ? earnedPrizes.map((p, i) => (
-                            <div key={i} className="text-4xl md:text-5xl bg-white w-16 h-16 md:w-24 md:h-24 flex items-center justify-center rounded-xl md:rounded-2xl shadow-md border border-slate-100" style={{ fontFamily: '"Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif', lineHeight: 1 }}>
+                            <span key={i} className="text-4xl md:text-5xl bg-white px-3 py-2 md:px-5 md:py-3 rounded-xl md:rounded-2xl shadow-md border border-slate-100 inline-block leading-none" style={{ fontFamily: '"Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif' }}>
                               {p}
-                            </div>
+                            </span>
                           ))
                           : <div className="text-slate-400 text-base md:text-lg font-bold flex items-center h-full text-center justify-center w-full">עוד אין פרסים, המשיכו לשחק!</div>
                         }
@@ -1198,10 +1213,20 @@ export default function App() {
                     <Download className="w-6 h-6 md:w-8 md:h-8" /> {t('שתף', 'שתפי')} הישגים
                   </motion.button>
                   <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                    onClick={() => setScreen('map')}
-                    className="py-4 md:py-5 px-6 md:px-10 bg-white text-slate-700 rounded-xl md:rounded-2xl font-black text-lg md:text-xl shadow-xl border-b-4 md:border-b-[6px] border-slate-200"
+                    onClick={() => {
+                      if (earnedPrizes.length === TOTAL_CHALLENGES) {
+                        setScreen('victory');
+                      } else {
+                        setScreen('map');
+                      }
+                    }}
+                    className="py-4 md:py-5 px-6 md:px-10 bg-white text-slate-700 rounded-xl md:rounded-2xl font-black text-lg md:text-xl shadow-xl border-b-4 md:border-b-[6px] border-slate-200 flex items-center gap-2 md:gap-3 justify-center"
                   >
-                    חזרה למפה
+                    {earnedPrizes.length === TOTAL_CHALLENGES ? (
+                      <><Trophy className="w-5 h-5 md:w-6 md:h-6 text-yellow-500" /> למסך הניצחון</>
+                    ) : (
+                      <><Map className="w-5 h-5 md:w-6 md:h-6" /> חזרה למפה</>
+                    )}
                   </motion.button>
                 </div>
               </div>
@@ -1247,18 +1272,24 @@ export default function App() {
                 <h2 className="text-6xl md:text-8xl font-black mb-6 md:mb-8 tracking-tight drop-shadow-xl text-transparent bg-clip-text bg-gradient-to-b from-white to-yellow-200">ניצחון אדיר! 🏆</h2>
                 <p className="text-2xl md:text-4xl mb-12 md:mb-16 leading-relaxed font-bold text-white/90">כל הכבוד <span className="text-yellow-300 drop-shadow-md">{userName}</span>!<br />סיימת את כל האתגרים של ב'2 והוכחת שאת/ה {t('אלוף', 'אלופה')} אמיתי/ת בחשבון!</p>
 
-                <div className="flex flex-col sm:flex-row gap-5 md:gap-6 justify-center">
+                <div className="flex flex-col sm:flex-row gap-4 md:gap-5 justify-center flex-wrap">
                   <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                     onClick={() => setScreen('shareCertificate')}
-                    className="px-10 py-5 md:px-12 md:py-6 bg-purple-600 text-white rounded-2xl md:rounded-full font-black text-2xl md:text-3xl shadow-[0_15px_35px_-5px_rgba(147,51,234,0.6)] flex items-center justify-center gap-3 md:gap-4 border-4 border-purple-400"
+                    className="px-6 py-4 md:px-10 md:py-5 bg-purple-600 text-white rounded-2xl md:rounded-full font-black text-xl md:text-2xl shadow-[0_15px_35px_-5px_rgba(147,51,234,0.6)] flex items-center justify-center gap-2 md:gap-3 border-4 border-purple-400 shrink-0"
                   >
-                    <Download strokeWidth={3} className="w-6 h-6 md:w-8 md:h-8" /> התעודה שלי
+                    <Download strokeWidth={3} className="w-5 h-5 md:w-7 md:h-7" /> צפייה בהישגים
+                  </motion.button>
+                  <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                    onClick={() => setScreen('map')}
+                    className="px-6 py-4 md:px-10 md:py-5 bg-emerald-500 text-white rounded-2xl md:rounded-full font-black text-xl md:text-2xl shadow-[0_15px_35px_-5px_rgba(16,185,129,0.5)] flex items-center justify-center gap-2 md:gap-3 border-4 border-emerald-300 shrink-0"
+                  >
+                    <Map strokeWidth={3} className="w-5 h-5 md:w-7 md:h-7" /> חזרה למפה
                   </motion.button>
                   <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                     onClick={() => setScreen('welcome')}
-                    className="px-10 py-5 md:px-12 md:py-6 bg-white text-indigo-800 rounded-2xl md:rounded-full font-black text-2xl md:text-3xl shadow-xl border-4 border-white/50 hover:bg-slate-50"
+                    className="px-6 py-4 md:px-10 md:py-5 bg-white text-indigo-800 rounded-2xl md:rounded-full font-black text-xl md:text-2xl shadow-xl border-4 border-white/50 hover:bg-slate-50 shrink-0"
                   >
-                    למסך הראשי
+                    התחל מחדש
                   </motion.button>
                 </div>
               </motion.div>
