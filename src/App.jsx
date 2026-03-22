@@ -366,6 +366,31 @@ export default function App() {
   const [reversedDigits, setReversedDigits] = useState(false);
   const [focusPulse, setFocusPulse] = useState(0);
 
+  const [supportsEmoji14, setSupportsEmoji14] = useState(true);
+
+  useEffect(() => {
+    try {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.textBaseline = 'top';
+        ctx.font = '32px Arial';
+        ctx.fillText('🫱', 0, 0);
+        const pixels = ctx.getImageData(0, 0, 32, 32).data;
+        let hasColor = false;
+        for (let i = 0; i < pixels.length; i += 4) {
+          if (pixels[i + 3] > 0 && (pixels[i] !== pixels[i + 1] || pixels[i + 1] !== pixels[i + 2])) {
+            hasColor = true;
+            break;
+          }
+        }
+        setSupportsEmoji14(hasColor);
+      }
+    } catch (e) {
+      // Ignore cross-origin or canvas read errors if blocked
+    }
+  }, []);
+
   const timerRef = useRef(null);
   const feedbackTimerRef = useRef(null);
   const sessionStartRef = useRef(null);
@@ -1010,10 +1035,14 @@ export default function App() {
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-md">
                     <motion.div initial={{ scale: 0.5, rotate: -10 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", bounce: 0.5 }} className="flex items-center gap-3 md:gap-6 bg-white p-6 md:p-12 rounded-[3rem] md:rounded-[4rem] shadow-[0_0_100px_rgba(255,255,255,0.8)] border-[8px] md:border-[12px] border-yellow-400">
                       <span className="font-black text-6xl md:text-[10rem] text-indigo-600 drop-shadow-lg leading-none">7</span>
-                      <div className="flex gap-1 md:gap-2 relative top-1 md:top-4">
-                        <span className="anim-hand-left text-[50px] md:text-[100px] leading-none">🫱</span>
+                      <div className="flex gap-1 md:gap-2 relative top-1 md:top-4" style={{ fontFamily: '"Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif' }}>
+                        <span className="anim-hand-left text-[50px] md:text-[100px] leading-none">
+                          {supportsEmoji14 ? '🫱' : '🖐️'}
+                        </span>
                         <span className="text-[50px] md:text-[100px] leading-none -mt-3 md:-mt-6">🤩</span>
-                        <span className="anim-hand-right text-[50px] md:text-[100px] leading-none">🫲</span>
+                        <span className={`anim-hand-right text-[50px] md:text-[100px] leading-none ${!supportsEmoji14 ? 'inline-block scale-x-[-1]' : ''}`}>
+                          {supportsEmoji14 ? '🫲' : '🖐️'}
+                        </span>
                       </div>
                       <span className="font-black text-6xl md:text-[10rem] text-pink-500 drop-shadow-lg leading-none">6</span>
                     </motion.div>

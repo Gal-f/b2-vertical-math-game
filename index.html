@@ -19,7 +19,8 @@
     })(document, window.mixpanel || [])
 
     mixpanel.init('eace94fee89a743bd2d192e724b517ef', {
-      autocapture: true,
+      autocapture: false,
+      track_pageview: false,
       record_sessions_percent: 100,
       api_host: 'https://api-eu.mixpanel.com',
     })
