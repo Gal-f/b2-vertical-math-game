@@ -170,8 +170,21 @@ const VerticalProblem = ({
   carryTens, setCarryTens, carryOnes, setCarryOnes,
   isStatic = false, correctData = null,
   gender = 'male',
-  onEnter
+  onEnter,
+  focusPulse
 }) => {
+  const tensRef = useRef(null);
+  const onesRef = useRef(null);
+  const carryTensRef = useRef(null);
+  const carryOnesRef = useRef(null);
+
+  // Auto-focus logic hooked to gameplay flow
+  useEffect(() => {
+    if (!isStatic && onesRef.current) {
+      setTimeout(() => onesRef.current.focus(), 50);
+    }
+  }, [focusPulse, isStatic]);
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && onEnter) {
       onEnter();
@@ -183,9 +196,6 @@ const VerticalProblem = ({
   const n2Ones = num2 % 10;
 
   const [activeCarry, setActiveCarry] = useState(null);
-
-  const tensRef = useRef(null);
-  const onesRef = useRef(null);
 
   const displayCarryTens = isStatic ? correctData?.carryTens : carryTens;
   const displayCarryOnes = isStatic ? correctData?.carryOnes : carryOnes;
@@ -215,10 +225,15 @@ const VerticalProblem = ({
           <span className="text-[10px] md:text-[12px] text-slate-400 font-sans mb-1 uppercase tracking-wider">המרה</span>
           {!isStatic ? (
             <motion.input
+              ref={carryTensRef}
               whileFocus={{ scale: 1.1, borderColor: '#3b82f6' }}
-              type="text" maxLength="1"
+              type="text" inputMode="numeric" pattern="[0-9]*" maxLength="1"
               value={carryTens}
-              onChange={(e) => setCarryTens(e.target.value.replace(/[^0-9]/g, ''))}
+              onChange={(e) => {
+                const val = e.target.value.replace(/[^0-9]/g, '');
+                setCarryTens(val);
+                if (val.length === 1) carryOnesRef.current?.focus();
+              }}
               onKeyDown={handleKeyDown}
               onFocus={() => setActiveCarry('tens')}
               onBlur={() => setActiveCarry(null)}
@@ -235,10 +250,15 @@ const VerticalProblem = ({
           <span className="text-[10px] md:text-[12px] text-slate-400 font-sans mb-1 uppercase tracking-wider">המרה</span>
           {!isStatic ? (
             <motion.input
+              ref={carryOnesRef}
               whileFocus={{ scale: 1.1, borderColor: '#3b82f6' }}
-              type="text" maxLength="2"
+              type="text" inputMode="numeric" pattern="[0-9]*" maxLength="2"
               value={carryOnes}
-              onChange={(e) => setCarryOnes(e.target.value.replace(/[^0-9]/g, ''))}
+              onChange={(e) => {
+                const val = e.target.value.replace(/[^0-9]/g, '');
+                setCarryOnes(val);
+                if (val.length === 2) onesRef.current?.focus();
+              }}
               onKeyDown={handleKeyDown}
               onFocus={() => setActiveCarry('ones')}
               onBlur={() => setActiveCarry(null)}
@@ -278,7 +298,7 @@ const VerticalProblem = ({
             <motion.input
               whileFocus={{ y: -3, boxShadow: '0 8px 15px -3px rgba(0, 0, 0, 0.1)' }}
               ref={tensRef}
-              type="text" maxLength="2"
+              type="text" inputMode="numeric" pattern="[0-9]*" maxLength="2"
               value={resTens}
               onChange={(e) => {
                 setResTens(e.target.value.replace(/[^0-9-]/g, ''));
@@ -290,7 +310,7 @@ const VerticalProblem = ({
             <motion.input
               whileFocus={{ y: -3, boxShadow: '0 8px 15px -3px rgba(0, 0, 0, 0.1)' }}
               ref={onesRef}
-              type="text" maxLength="1" autoFocus
+              type="text" inputMode="numeric" pattern="[0-9]*" maxLength="1" autoFocus
               value={resOnes}
               onChange={(e) => {
                 setResOnes(e.target.value.replace(/[^0-9]/g, ''));
@@ -343,6 +363,8 @@ export default function App() {
   const [feedbackCountdown, setFeedbackCountdown] = useState(30);
   const [showInstructions, setShowInstructions] = useState(false);
   const [confusedOperation, setConfusedOperation] = useState(false);
+  const [reversedDigits, setReversedDigits] = useState(false);
+  const [focusPulse, setFocusPulse] = useState(0);
 
   const timerRef = useRef(null);
   const feedbackTimerRef = useRef(null);
@@ -369,11 +391,11 @@ export default function App() {
       }
       track('Game Started', { difficulty, gender });
     }
-    
+
     if (screen === 'welcome') {
       sessionStartRef.current = null;
     }
-    
+
     if (screen === 'challengeIntro') {
       track('Challenge Entered', { theme: THEMES[challengeIdx]?.name || 'unknown', challengeIdx });
     } else if (screen === 'challengeComplete') {
@@ -438,6 +460,7 @@ export default function App() {
     setTimeLeft(settings.time);
     setTimerActive(true);
     setScreen('playing');
+    setFocusPulse(p => p + 1);
   }, [challengeIdx, difficulty, taskIdx, exerciseIdx]);
 
   const retryExercise = useCallback(() => {
@@ -453,6 +476,7 @@ export default function App() {
     setTimeLeft(settings.time);
     setTimerActive(true);
     setScreen('playing');
+    setFocusPulse(p => p + 1);
   }, [challengeIdx, difficulty]);
 
   useEffect(() => {
@@ -493,6 +517,7 @@ export default function App() {
     setTimerActive(false);
     setFeedbackType('timeout');
     setConfusedOperation(false);
+    setReversedDigits(false);
     setHearts(h => h - 1);
     setConsecutiveCorrect(0);
     setScreen('feedback');
@@ -517,9 +542,16 @@ export default function App() {
     const isCorrect = numericInput === currentEx.result;
 
     let confused = false;
+    let reversed = false;
     if (!isCorrect) {
       const oppResult = currentEx.type === '+' ? currentEx.num1 - currentEx.num2 : currentEx.num1 + currentEx.num2;
       if (numericInput === oppResult) confused = true;
+
+      const strResult = currentEx.result.toString();
+      const reversedStrResult = strResult.split('').reverse().join('');
+      if (strResult.length >= 2 && (rTens + rOnes) === reversedStrResult) {
+        reversed = true;
+      }
     }
 
     if (isCorrect) {
@@ -554,6 +586,7 @@ export default function App() {
       setConsecutiveCorrect(0);
       setFeedbackType('error');
       setConfusedOperation(confused);
+      setReversedDigits(reversed);
       setScreen('feedback');
     }
   };
@@ -686,7 +719,7 @@ export default function App() {
               >
                 מתחילים! <ArrowLeft strokeWidth={4} className="w-6 h-6 md:w-10 md:h-10" />
               </motion.button>
-              
+
               <div className="absolute bottom-4 left-0 w-full text-center text-white/70 font-medium text-sm md:text-base drop-shadow-md pb-2">
                 המשחק נוצר על ידי אדם וגל אבא של אדם
               </div>
@@ -758,10 +791,10 @@ export default function App() {
             <motion.div key="map" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col flex-1 relative overflow-hidden text-white w-full h-full min-h-0">
               <div className="p-4 md:p-6 bg-black/40 backdrop-blur-md flex justify-between items-center shadow-xl z-20 border-b border-white/10 shrink-0">
                 <h2 className="text-xl md:text-4xl font-black flex items-center gap-2 md:gap-4 drop-shadow-md"><Map className="text-indigo-300 w-6 h-6 md:w-10 md:h-10" /> מפת האתגרים</h2>
-                <motion.button 
-                  whileHover={{ scale: 1.05 }} 
-                  whileTap={{ scale: 0.95 }} 
-                  onClick={() => setScreen('shareCertificate')} 
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setScreen('shareCertificate')}
                   className="flex items-center gap-2 md:gap-3 text-yellow-300 font-bold bg-black/40 hover:bg-black/60 cursor-pointer px-3 py-1.5 md:px-6 md:py-3 text-sm md:text-xl rounded-full border border-white/20 shadow-inner backdrop-blur-sm transition-colors"
                 >
                   <Trophy className="w-4 h-4 md:w-6 md:h-6" /> {earnedPrizes.length === 0 ? 'אין' : earnedPrizes.join(' ')}
@@ -918,6 +951,7 @@ export default function App() {
                     resTens={resTens} setResTens={setResTens} resOnes={resOnes} setResOnes={setResOnes}
                     carryTens={carryTens} setCarryTens={setCarryTens} carryOnes={carryOnes} setCarryOnes={setCarryOnes}
                     gender={gender}
+                    focusPulse={focusPulse}
                     onEnter={() => {
                       if ((resOnes || resTens) && !isChecking) checkAnswer();
                     }}
@@ -939,17 +973,17 @@ export default function App() {
                 {bonusActive && (
                   <motion.div initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0, opacity: 0 }}
                     onClick={handleBonusCatch}
-                    className="absolute z-50 cursor-pointer"
+                    className="absolute z-50 cursor-pointer flex flex-col items-center gap-2 md:gap-3"
                     style={{ top: bonusPos.top, left: bonusPos.left }}
                   >
                     <motion.div animate={{ y: [-10, 10, -10] }} transition={{ repeat: Infinity, duration: 1.5 }} className="bg-white/95 p-3 md:p-5 rounded-full shadow-[0_0_50px_rgba(244,63,94,0.8)] backdrop-blur-md border-4 border-rose-200">
                       <Heart fill="#f43f5e" stroke="#f43f5e" className="w-10 h-10 md:w-16 md:h-16 animate-pulse drop-shadow-xl" />
                     </motion.div>
-                  </motion.div>
-                )}
-                {bonusMessageVisible && (
-                  <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -50, opacity: 0 }} className="absolute top-[15%] left-1/2 -translate-x-1/2 z-40 bg-yellow-400 text-slate-900 font-black px-4 py-2 md:px-8 md:py-4 rounded-full shadow-2xl border-4 border-white text-sm md:text-xl text-center whitespace-nowrap">
-                    {t('פתרת נכון 4 תרגילים ברצף! תפוס את הלב!', 'פתרת נכון 4 תרגילים ברצף! תפסי את הלב!')}
+                    {bonusMessageVisible && (
+                      <div className="bg-yellow-400 text-slate-900 font-black px-3 py-1.5 md:px-5 md:py-2.5 rounded-full shadow-2xl border-2 border-white text-sm md:text-lg text-center whitespace-nowrap pointer-events-none drop-shadow-md">
+                        {t('פתרת נכון 4 תרגילים ברצף! תפוס את הלב!', 'פתרת נכון 4 תרגילים ברצף! תפסי את הלב!')}
+                      </div>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -984,7 +1018,11 @@ export default function App() {
                         <li className="flex items-start gap-3 md:gap-4 bg-blue-50 p-3 md:p-4 rounded-xl md:rounded-2xl"><span className="text-2xl md:text-3xl shrink-0 leading-none">✍️</span> <div><b className="text-slate-900">המרות:</b> השתמשו בריבועים העליונים כדי לכתוב המרות. הספרה שהוחלפה תימחק בקו!</div></li>
                         <li className="flex items-start gap-3 md:gap-4 bg-yellow-50 p-3 md:p-4 rounded-xl md:rounded-2xl"><span className="text-2xl md:text-3xl shrink-0 leading-none">🎁</span> <div><b className="text-slate-900">בונוס:</b> 4 תשובות נכונות ברצף יעניקו לכם לב מתנה שיופיע על המסך.</div></li>
                       </ul>
-                      <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setShowInstructions(false)} className="mt-6 md:mt-10 w-full py-4 md:py-5 bg-indigo-600 text-white rounded-xl md:rounded-2xl font-black text-xl md:text-2xl shadow-xl">הבנתי, בואו נמשיך!</motion.button>
+                      <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setShowInstructions(false)} className="mt-6 md:mt-10 mb-4 md:mb-6 w-full py-4 md:py-5 bg-indigo-600 text-white rounded-xl md:rounded-2xl font-black text-xl md:text-2xl shadow-xl">הבנתי, בואו נמשיך!</motion.button>
+
+                      <div className="text-center text-slate-400 font-bold text-xs md:text-sm border-t-2 border-slate-100 pt-3 md:pt-4 mt-2">
+                        המשחק נוצר על ידי אדם וגל אבא של אדם
+                      </div>
                     </motion.div>
                   </motion.div>
                 )}
@@ -1022,6 +1060,11 @@ export default function App() {
                       {confusedOperation && (
                         <div className="bg-orange-100 text-orange-800 p-3 md:p-4 rounded-xl md:rounded-2xl mt-3 md:mt-4 font-black border-2 border-orange-200 shadow-sm text-sm md:text-lg">
                           נראה שהתבלבלת בין חיבור לחיסור! שימו לב לסימן.
+                        </div>
+                      )}
+                      {reversedDigits && (
+                        <div className="bg-purple-100 text-purple-800 p-3 md:p-4 rounded-xl md:rounded-2xl mt-3 md:mt-4 font-black border-2 border-purple-200 shadow-sm text-sm md:text-lg">
+                          {t('שים לב! יכול להיות שהתבלבלת בסדר של הספרות? 😉.', 'שימי לב! יכול להיות שהתבלבלת בסדר של הספרות? 😉')}
                         </div>
                       )}
                     </div>
@@ -1112,26 +1155,28 @@ export default function App() {
               <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md"></div>
 
               <div className="my-auto w-full flex flex-col items-center shrink-0">
-                <motion.div initial={{ y: -20 }} animate={{ y: 0 }} id="certificate-render" className="bg-white p-6 md:p-12 rounded-3xl md:rounded-[3rem] shadow-2xl border-[8px] md:border-[12px] border-yellow-400 max-w-sm md:max-w-2xl w-full text-center relative mb-6 md:mb-8">
-                  <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none rounded-[2rem]" style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/cubes.png')` }}></div>
-                  <Star className="absolute top-4 right-4 md:top-8 md:right-8 text-yellow-400 drop-shadow-md w-10 h-10 md:w-16 md:h-16" fill="yellow" />
-                  <Star className="absolute top-4 left-4 md:top-8 md:left-8 text-yellow-400 drop-shadow-md w-10 h-10 md:w-16 md:h-16" fill="yellow" />
+                <motion.div initial={{ y: -20 }} animate={{ y: 0 }} className="max-w-sm md:max-w-2xl w-full relative mb-6 md:mb-8">
+                  <div id="certificate-render" className="bg-white p-6 md:p-12 rounded-3xl md:rounded-[3rem] shadow-2xl border-[8px] md:border-[12px] border-yellow-400 w-full text-center relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none rounded-[2rem]" style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/cubes.png')` }}></div>
+                    <Star className="absolute top-6 right-6 md:top-8 md:right-8 text-yellow-400 drop-shadow-md w-10 h-10 md:w-16 md:h-16" fill="yellow" />
+                    <Star className="absolute top-6 left-6 md:top-8 md:left-8 text-yellow-400 drop-shadow-md w-10 h-10 md:w-16 md:h-16" fill="yellow" />
 
-                  <div className="relative z-10 mt-2 md:mt-0">
-                    <Trophy className="mx-auto mb-4 md:mb-6 text-yellow-500 drop-shadow-lg w-16 h-16 md:w-24 md:h-24" />
-                    <h2 className="text-4xl md:text-5xl font-black text-indigo-800 mb-2 md:mb-4 tracking-tight">תעודת הצטיינות</h2>
-                    <p className="text-xl md:text-2xl text-slate-500 mb-6 md:mb-8 font-medium">ל{gender === 'male' ? 'שחקן' : 'שחקנית'} ה{t('אלוף', 'אלופה')}:</p>
-                    <div className="inline-block relative mb-8 md:mb-10">
-                      <h3 className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 px-6 md:px-10 pb-2 md:pb-4 relative z-10 leading-tight">{userName}</h3>
-                      <div className="absolute bottom-0 left-0 w-full h-3 md:h-4 bg-yellow-300 rounded-full opacity-50 transform -skew-x-12"></div>
-                    </div>
+                    <div className="relative z-10 mt-2 md:mt-0">
+                      <Trophy className="mx-auto mb-4 md:mb-6 text-yellow-500 drop-shadow-lg w-16 h-16 md:w-24 md:h-24" />
+                      <h2 className="text-4xl md:text-5xl font-black text-indigo-800 mb-2 md:mb-4 tracking-tight">תעודת הצטיינות</h2>
+                      <p className="text-xl md:text-2xl text-slate-500 mb-6 md:mb-8 font-medium">ל{gender === 'male' ? 'שחקן' : 'שחקנית'} ה{t('אלוף', 'אלופה')}:</p>
+                      <div className="inline-block relative mb-8 md:mb-10">
+                        <h3 className="text-5xl md:text-6xl font-black text-indigo-700 px-6 md:px-10 pb-2 md:pb-4 relative z-10 leading-tight">{userName}</h3>
+                        <div className="absolute bottom-0 left-0 w-full h-3 md:h-4 bg-yellow-300 rounded-full opacity-50 transform -skew-x-12"></div>
+                      </div>
 
-                    <p className="font-black text-slate-700 text-lg md:text-xl mb-4 md:mb-6">אלו הפרסים שזכיתי בהם במשחק של ב׳2:</p>
-                    <div className="flex flex-wrap justify-center gap-3 md:gap-5 bg-slate-50 p-4 md:p-8 rounded-2xl md:rounded-[2rem] min-h-[100px] md:min-h-[140px] border-4 border-slate-100 shadow-inner">
-                      {earnedPrizes.length > 0
-                        ? earnedPrizes.map((p, i) => <span key={i} className="text-4xl md:text-5xl bg-white p-3 md:p-5 rounded-xl md:rounded-2xl shadow-md border border-slate-100">{p}</span>)
-                        : <span className="text-slate-400 text-base md:text-lg font-bold flex items-center h-full text-center">עוד אין פרסים, המשיכו לשחק!</span>
-                      }
+                      <p className="font-black text-slate-700 text-lg md:text-xl mb-4 md:mb-6">אלו הפרסים שזכיתי בהם במשחק של ב׳2:</p>
+                      <div className="flex flex-wrap justify-center gap-3 md:gap-5 bg-slate-50 p-4 md:p-8 rounded-2xl md:rounded-[2rem] min-h-[100px] md:min-h-[140px] border-4 border-slate-100 shadow-inner">
+                        {earnedPrizes.length > 0
+                          ? earnedPrizes.map((p, i) => <span key={i} className="text-4xl md:text-5xl bg-white p-3 md:p-5 rounded-xl md:rounded-2xl shadow-md border border-slate-100" style={{ fontFamily: '"Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif' }}>{p}</span>)
+                          : <span className="text-slate-400 text-base md:text-lg font-bold flex items-center h-full text-center">עוד אין פרסים, המשיכו לשחק!</span>
+                        }
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -1162,9 +1207,15 @@ export default function App() {
                 <RefreshCcw className="w-48 h-48 md:w-[300px] md:h-[300px]" />
               </motion.div>
 
-              <div className="relative z-10 bg-black/30 p-8 md:p-14 rounded-3xl md:rounded-[3rem] backdrop-blur-xl border border-white/20 shadow-2xl max-w-sm md:max-w-xl my-auto shrink-0">
+              <div className="relative z-10 bg-black/30 p-8 md:p-14 rounded-3xl md:rounded-[3rem] backdrop-blur-xl border border-white/20 shadow-2xl max-w-sm md:max-w-xl my-auto shrink-0 w-full">
                 <h2 className="text-4xl md:text-6xl font-black mb-4 md:mb-6 drop-shadow-md">אופס, נגמרו הלבבות!</h2>
-                <p className="text-xl md:text-3xl mb-8 md:mb-12 opacity-95 font-medium">{userName}, לא קרה כלום.<br /><br />כל {t('גיבור', 'גיבורה')} צריכים להתאמן קצת יותר לפעמים!</p>
+                <p className="text-xl md:text-3xl mb-6 md:mb-8 opacity-95 font-medium">{userName}, לא קרה כלום.<br /><br />כל {t('גיבור', 'גיבורה')} צריכים להתאמן קצת יותר לפעמים!</p>
+                
+                <div className="bg-white/20 text-white font-bold p-4 md:p-6 rounded-2xl mb-8 md:mb-10 border border-white/30 shadow-inner leading-relaxed">
+                  <span className="text-2xl md:text-4xl block text-yellow-300 drop-shadow-md mb-2">פתרת { (challengeIdx * TASKS_PER_CHALLENGE * EXERCISES_PER_TASK) + (taskIdx * EXERCISES_PER_TASK) + exerciseIdx } תרגילים!</span>
+                  <span className="text-lg md:text-xl opacity-90">נכון שזה היה הרבה יותר מהר מאשר בחוברת חשבון? 😉</span>
+                </div>
+
                 <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                   onClick={resetGame}
                   className="px-6 py-4 md:px-10 md:py-5 bg-white text-rose-600 rounded-full font-black text-xl md:text-3xl shadow-2xl flex items-center justify-center gap-3 md:gap-4 mx-auto w-full"
