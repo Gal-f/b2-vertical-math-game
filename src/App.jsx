@@ -342,6 +342,7 @@ export default function App() {
   const [exerciseIdx, setExerciseIdx] = useState(0);
   const [hearts, setHearts] = useState(INITIAL_HEARTS);
   const [consecutiveCorrect, setConsecutiveCorrect] = useState(0);
+  const [totalSolvedSession, setTotalSolvedSession] = useState(0);
   const [earnedPrizes, setEarnedPrizes] = useState([]);
 
   const [currentEx, setCurrentEx] = useState(null);
@@ -589,6 +590,7 @@ export default function App() {
 
       const newConsecutive = consecutiveCorrect + 1;
       setConsecutiveCorrect(newConsecutive);
+      setTotalSolvedSession(s => s + 1);
       setFeedbackType('success');
       setIsSuccessAction(true);
 
@@ -685,6 +687,7 @@ export default function App() {
     setTaskIdx(0);
     setExerciseIdx(0);
     setConsecutiveCorrect(0);
+    setTotalSolvedSession(0);
     setEarnedPrizes([]);
     setScreen('map');
   };
@@ -1295,8 +1298,13 @@ export default function App() {
                 <p className="text-xl md:text-3xl mb-6 md:mb-8 opacity-95 font-medium">{userName}, לא קרה כלום.<br /><br />כל {t('גיבור', 'גיבורה')} צריכים להתאמן קצת יותר לפעמים!</p>
 
                 <div className="bg-white/20 text-white font-bold p-4 md:p-6 rounded-2xl mb-8 md:mb-10 border border-white/30 shadow-inner leading-relaxed">
-                  <span className="text-2xl md:text-4xl block text-yellow-300 drop-shadow-md mb-2">פתרת {(challengeIdx * TASKS_PER_CHALLENGE * EXERCISES_PER_TASK) + (taskIdx * EXERCISES_PER_TASK) + exerciseIdx} תרגילים!</span>
-                  <span className="text-lg md:text-xl opacity-90">נכון שזה היה הרבה יותר מהר מאשר בחוברת חשבון? 😉</span>
+                  <span className="text-2xl md:text-4xl block text-yellow-300 drop-shadow-md mb-2">פתרת {totalSolvedSession} תרגילים!</span>
+                  <span className="text-lg md:text-xl opacity-90">
+                    {totalSolvedSession < 5 
+                      ? t('בטוח שבמשחק הבא תצליח לפחות אחד יותר!', 'בטוח שבמשחק הבא תצליחי לפחות אחד יותר!')
+                      : 'נכון שזה היה הרבה יותר מהר מאשר בחוברת חשבון? 😉'
+                    }
+                  </span>
                 </div>
 
                 <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
